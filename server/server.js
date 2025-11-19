@@ -3,12 +3,23 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const authRoutes = require('./routes/auth-router');
+const cors = require("cors");
 
+// Create app FIRST
 const app = express();
+
+// Enable CORS here
+app.use(cors({
+  origin: "http://localhost:3000",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
+
+// Parse JSON
 app.use(express.json());
 
 // Use Auth Routes
-app.use('/api/auth', authRoutes);
+app.use('/api', authRoutes);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
