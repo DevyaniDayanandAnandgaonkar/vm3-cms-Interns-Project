@@ -2,7 +2,12 @@ const db = require("../config/db");
 const nodemailer = require("nodemailer");
 
 // Send Email Function
-async function sendStatusEmail(clientEmail, clientName, projectName, newStatus) {
+async function sendStatusEmail(
+  clientEmail,
+  clientName,
+  projectName,
+  newStatus
+) {
   const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 587,
@@ -53,10 +58,10 @@ exports.updateProjectStatus = async (req, res) => {
     const { project_name, client_name, email } = project[0];
 
     // UPDATE correct column
-    await db.query(
-      `UPDATE projects SET status = ? WHERE project_id = ?`,
-      [new_status, project_id]
-    );
+    await db.query(`UPDATE projects SET status = ? WHERE project_id = ?`, [
+      new_status,
+      project_id,
+    ]);
 
     // Send email
     await sendStatusEmail(email, client_name, project_name, new_status);
@@ -66,7 +71,6 @@ exports.updateProjectStatus = async (req, res) => {
       new_status,
       project_id,
     });
-
   } catch (error) {
     console.error("Error:", error);
     return res.status(500).json({ error: "Internal server error" });

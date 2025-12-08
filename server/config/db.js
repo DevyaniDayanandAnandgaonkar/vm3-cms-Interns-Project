@@ -3,7 +3,7 @@ const mysql = require("mysql2/promise");
 const dotenv = require("dotenv");
 dotenv.config();
 
-const pool = mysql.createPool({
+const db = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   PORT: process.env.PORT,
@@ -11,11 +11,14 @@ const pool = mysql.createPool({
   database: process.env.DB_NAME,
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0
+  queueLimit: 0,
 });
 
-pool.getConnection()
-  .then(conn => { console.log("✅ MySQL connected"); conn.release(); })
-  .catch(err => console.error("❌ MySQL connection failed:", err));
+db.getConnection()
+  .then((conn) => {
+    console.log("✅ MySQL connected");
+    conn.release();
+  })
+  .catch((err) => console.error("❌ MySQL connection failed:", err));
 
-module.exports = pool;
+module.exports = db;

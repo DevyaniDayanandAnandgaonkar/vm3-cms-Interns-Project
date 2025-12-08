@@ -1,9 +1,9 @@
-const express = require('express');
-const dotenv = require('dotenv');
+const express = require("express");
+const dotenv = require("dotenv");
 dotenv.config();
 
-const authRoutes = require('./routes/auth-router');
-const clientsRoutes = require('./routes/clients-router');
+const authRoutes = require("./routes/auth-router");
+const clientsRoutes = require("./routes/clients-router");
 const projectRoutes = require("./routes/projectRoutes");
 
 const cors = require("cors");
@@ -12,18 +12,20 @@ const cors = require("cors");
 const app = express();
 
 // Enable CORS here
-app.use(cors({
-  origin: "http://localhost:3000",
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 
 // Parse JSON
 app.use(express.json());
 
 // Use Auth Routes
-app.use('/api', authRoutes);
-app.use('/api/clients', clientsRoutes);
+app.use("/api", authRoutes);
+app.use("/api/clients", clientsRoutes);
 app.use("/api/projects", projectRoutes);
 
 const PORT = process.env.PORT || 4000;
