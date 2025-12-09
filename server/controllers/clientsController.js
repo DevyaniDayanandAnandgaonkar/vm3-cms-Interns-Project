@@ -113,6 +113,7 @@ exports.createClient = async (req, res) => {
 
     const [result] = await db.query(q, params);
 
+    // generate message and send email
     const msg = message("Client", email, password, "http://example.com/login");
     Sendmail(email, "Client Account Created", msg);
 

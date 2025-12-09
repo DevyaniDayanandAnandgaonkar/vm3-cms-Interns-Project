@@ -1,3 +1,5 @@
+// this function generates the message body for the email sent to new users
+
 exports.message = (role, email, password, url) => {
   return `Dear sir/madam,
 
