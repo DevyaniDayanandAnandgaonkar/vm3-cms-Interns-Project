@@ -5,7 +5,8 @@ dotenv.config();
 const authRoutes = require("./routes/auth-router");
 const clientsRoutes = require("./routes/clients-router");
 const projectRoutes = require("./routes/projectRoutes");
-
+const designationRoutes = require("./routes/designationRoutes");
+const departmentRoutes = require("./routes/departmentRoutes");
 const cors = require("cors");
 
 // Create app FIRST
@@ -27,6 +28,7 @@ app.use(express.json());
 app.use("/api", authRoutes);
 app.use("/api/clients", clientsRoutes);
 app.use("/api/projects", projectRoutes);
-
+app.use("/api/designations", designationRoutes);
+app.use("/api/departments", departmentRoutes);
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
