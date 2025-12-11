@@ -41,7 +41,7 @@ const express = require('express');
 const router = express.Router();
 const { body } = require('express-validator');
 
-const { createClient, updateClient } = require('../controllers/clientsController');
+const { createClient,getAllClients, updateClient} = require('../controllers/clientsController');
 const { authenticate, authorizeRoles } = require('../middleware/auth');
 
 // Create client — only admin/super-admin
@@ -56,6 +56,13 @@ router.post(
   createClient
 );
 
+// Get all clients — only admin/super-admin
+router.get(
+  '/',
+  authenticate,
+  authorizeRoles([1, 5]),
+  getAllClients
+);
 // Update client — only admin/super-admin
 router.put(
   '/:id',

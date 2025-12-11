@@ -199,3 +199,16 @@ exports.updateClient = async (req, res) => {
     res.status(500).json({ message: "Error updating client", error });
   }
 };
+// Get all clients
+exports.getAllClients = async (req, res) => {
+  try {
+    const [rows] = await db.query(
+      `SELECT client_id, client_name, email, phone, address, status, document_type, document_file 
+       FROM clients`
+    );
+
+    res.json(rows);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching clients', error });
+  }
+};
