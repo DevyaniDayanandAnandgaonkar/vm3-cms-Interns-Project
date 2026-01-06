@@ -2,11 +2,12 @@
 
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { apiRoutes } from '../apiRoutes';
 // Add client (POST)
 export const addClientAsync = createAsyncThunk('clients/addClient', async (clientData, { getState, rejectWithValue }) => {
   try {
     const token = getState().auth.token;
-    const res = await axios.post('http://localhost:5000/api/clients', clientData, {
+    const res = await axios.post(apiRoutes.clients.create, clientData, {
       headers: { 
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json'
@@ -23,7 +24,7 @@ export const updateClientAsync = createAsyncThunk('clients/updateClient', async 
   try {
     const id = clientData.client_id || clientData.id;
     const token = getState().auth.token;
-    await axios.put(`http://localhost:5000/api/clients/${id}`, clientData, {
+    await axios.put(apiRoutes.clients.update(id), clientData, {
       headers: { 
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json'
@@ -36,7 +37,7 @@ export const updateClientAsync = createAsyncThunk('clients/updateClient', async 
 });
 
 export const fetchClients = createAsyncThunk('clients/fetchClients', async () => {
-  const res = await axios.get('http://localhost:5000/api/clients');
+  const res = await axios.get(apiRoutes.clients.getAll);
   return res.data;
 });
 

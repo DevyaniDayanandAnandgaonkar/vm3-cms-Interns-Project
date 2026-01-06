@@ -1,12 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-
-const API_URL = 'http://localhost:5000/api/roles';
+import { apiRoutes } from '../apiRoutes';
 
 export const fetchRoles = createAsyncThunk('roles/fetchRoles', async (_, { getState, rejectWithValue }) => {
   try {
     const { token } = getState().auth;
-    const response = await axios.get(API_URL, {
+    const response = await axios.get(apiRoutes.roles.getAll, {
       headers: { Authorization: `Bearer ${token}` }
     });
     return response.data;
@@ -19,7 +18,7 @@ export const fetchRoles = createAsyncThunk('roles/fetchRoles', async (_, { getSt
 export const addRole = createAsyncThunk('roles/addRole', async (roleData, { getState, rejectWithValue }) => {
     try {
       const { token } = getState().auth;
-      const response = await axios.post(API_URL, roleData, {
+      const response = await axios.post(apiRoutes.roles.create, roleData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       return response.data;
@@ -32,7 +31,7 @@ export const addRole = createAsyncThunk('roles/addRole', async (roleData, { getS
 export const updateRole = createAsyncThunk('roles/updateRole', async ({ id, roleData }, { getState, rejectWithValue }) => {
   try {
     const { token } = getState().auth;
-    const response = await axios.put(`${API_URL}/${id}`, roleData, {
+    const response = await axios.put(apiRoutes.roles.update(id), roleData, {
       headers: { Authorization: `Bearer ${token}` }
     });
     return response.data;
@@ -45,7 +44,7 @@ export const updateRole = createAsyncThunk('roles/updateRole', async ({ id, role
 export const deleteRole = createAsyncThunk('roles/deleteRole', async (id, { getState, rejectWithValue }) => {
   try {
     const { token } = getState().auth;
-    await axios.delete(`${API_URL}/${id}`, {
+    await axios.delete(apiRoutes.roles.delete(id), {
       headers: { Authorization: `Bearer ${token}` }
     });
     return id;

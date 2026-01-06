@@ -1,11 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { apiRoutes } from '../apiRoutes';
 
 // Fetch all employees
 export const fetchEmployees = createAsyncThunk('employees/fetchEmployees', async (_, { getState, rejectWithValue }) => {
   try {
     const token = getState().auth.token;
-    const res = await axios.get('http://localhost:5000/api/employees', {
+    const res = await axios.get(apiRoutes.employees.getAll, {
       headers: { Authorization: `Bearer ${token}` }
     });
     return res.data;
@@ -18,7 +19,7 @@ export const fetchEmployees = createAsyncThunk('employees/fetchEmployees', async
 export const addEmployeeAsync = createAsyncThunk('employees/addEmployee', async (employeeData, { getState, dispatch, rejectWithValue }) => {
   try {
     const token = getState().auth.token;
-    const res = await axios.post('http://localhost:5000/api/employees', employeeData, {
+    const res = await axios.post(apiRoutes.employees.create, employeeData, {
       headers: { 
         Authorization: `Bearer ${token}`,
         'Content-Type': 'multipart/form-data'
@@ -36,7 +37,7 @@ export const updateEmployeeAsync = createAsyncThunk('employees/updateEmployee', 
   try {
     const token = getState().auth.token;
     const id = employeeData.emp_id || employeeData.id;
-    await axios.put(`http://localhost:5000/api/employees/${id}`, employeeData.body, {
+    await axios.put(apiRoutes.employees.update(id), employeeData.body, {
       headers: { 
         Authorization: `Bearer ${token}`,
         'Content-Type': 'multipart/form-data'
@@ -53,7 +54,7 @@ export const updateEmployeeAsync = createAsyncThunk('employees/updateEmployee', 
 export const deleteEmployee = createAsyncThunk('employees/deleteEmployee', async (id, { getState, rejectWithValue }) => {
   try {
     const token = getState().auth.token;
-    await axios.delete(`http://localhost:5000/api/employees/${id}`, {
+    await axios.delete(apiRoutes.employees.delete(id), {
       headers: { Authorization: `Bearer ${token}` }
     });
     return id;

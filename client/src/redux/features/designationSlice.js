@@ -1,12 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-
-const API_URL = 'http://localhost:5000/api/designations';
+import { apiRoutes } from '../apiRoutes';
 
 export const fetchDesignations = createAsyncThunk('designations/fetchDesignations', async (_, { getState, rejectWithValue }) => {
   try {
     const { token } = getState().auth;
-    const response = await axios.get(API_URL, {
+    const response = await axios.get(apiRoutes.designations.getAll, {
       headers: { Authorization: `Bearer ${token}` }
     });
     return response.data;
@@ -19,7 +18,7 @@ export const fetchDesignations = createAsyncThunk('designations/fetchDesignation
 export const addDesignation = createAsyncThunk('designations/addDesignation', async (designationData, { getState, rejectWithValue }) => {
     try {
       const { token } = getState().auth;
-      const response = await axios.post(API_URL, designationData, {
+      const response = await axios.post(apiRoutes.designations.create, designationData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       return response.data;
@@ -32,7 +31,7 @@ export const addDesignation = createAsyncThunk('designations/addDesignation', as
 export const updateDesignation = createAsyncThunk('designations/updateDesignation', async ({ id, designationData }, { getState, rejectWithValue }) => {
   try {
     const { token } = getState().auth;
-    const response = await axios.put(`${API_URL}/${id}`, designationData, {
+    const response = await axios.put(apiRoutes.designations.update(id), designationData, {
       headers: { Authorization: `Bearer ${token}` }
     });
     return response.data;
@@ -45,7 +44,7 @@ export const updateDesignation = createAsyncThunk('designations/updateDesignatio
 export const deleteDesignation = createAsyncThunk('designations/deleteDesignation', async (id, { getState, rejectWithValue }) => {
   try {
     const { token } = getState().auth;
-    await axios.delete(`${API_URL}/${id}`, {
+    await axios.delete(apiRoutes.designations.delete(id), {
       headers: { Authorization: `Bearer ${token}` }
     });
     return id;

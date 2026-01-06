@@ -1,12 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-
-const API_URL = 'http://localhost:5000/api/partners';
+import { apiRoutes } from '../apiRoutes';
 
 export const fetchPartners = createAsyncThunk('partners/fetchPartners', async (_, { getState, rejectWithValue }) => {
   try {
     const { token } = getState().auth;
-    const response = await axios.get(API_URL, {
+    const response = await axios.get(apiRoutes.partners.getAll, {
       headers: { Authorization: `Bearer ${token}` }
     });
     return response.data;
@@ -19,7 +18,7 @@ export const fetchPartners = createAsyncThunk('partners/fetchPartners', async (_
 export const addPartner = createAsyncThunk('partners/addPartner', async (partnerData, { getState, rejectWithValue }) => {
     try {
       const { token } = getState().auth;
-      const response = await axios.post(API_URL, partnerData, {
+      const response = await axios.post(apiRoutes.partners.create, partnerData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       // The API should return the newly created partner object
@@ -33,7 +32,7 @@ export const addPartner = createAsyncThunk('partners/addPartner', async (partner
 export const updatePartner = createAsyncThunk('partners/updatePartner', async ({ id, partnerData }, { getState, rejectWithValue }) => {
   try {
     const { token } = getState().auth;
-    const response = await axios.put(`${API_URL}/${id}`, partnerData, {
+    const response = await axios.put(apiRoutes.partners.update(id), partnerData, {
       headers: { Authorization: `Bearer ${token}` }
     });
     // The API should return the updated partner object
@@ -47,7 +46,7 @@ export const updatePartner = createAsyncThunk('partners/updatePartner', async ({
 export const deletePartner = createAsyncThunk('partners/deletePartner', async (id, { getState, rejectWithValue }) => {
   try {
     const { token } = getState().auth;
-    await axios.delete(`${API_URL}/${id}`, {
+    await axios.delete(apiRoutes.partners.delete(id), {
       headers: { Authorization: `Bearer ${token}` }
     });
     return id;

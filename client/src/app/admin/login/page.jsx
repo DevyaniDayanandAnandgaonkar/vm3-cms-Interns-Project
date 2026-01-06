@@ -6,6 +6,7 @@ import { loginSuccess } from "@/redux/features/authSlice";
 import { useRouter } from "next/navigation";
 import ElectricBorder from "@/components/ui/electric-border"; // <-- ADD THIS
 import {useSelector} from "react-redux";
+import { apiRoutes } from "@/redux/apiRoutes";
 
 export default function AdminLogin() {
   const dispatch = useDispatch();
@@ -20,7 +21,7 @@ export default function AdminLogin() {
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:5000/api/auth/login", {
+      const res = await fetch(apiRoutes.auth.login, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -166,7 +167,7 @@ export default function AdminLogin() {
 //     setLoading(true);
 
 //     try {
-//       const res = await fetch("http://localhost:5000/api/auth/login", {
+//       const res = await fetch(apiRoutes.auth.login, {
 //         method: "POST",
 //         headers: { "Content-Type": "application/json" },
 //         body: JSON.stringify({ email, password }),

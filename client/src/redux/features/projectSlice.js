@@ -1,11 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { apiRoutes } from '../apiRoutes';
 
 // Fetch all projects
 export const fetchProjects = createAsyncThunk('projects/fetchProjects', async (_, { getState, rejectWithValue }) => {
   try {
     const token = getState().auth.token;
-    const res = await axios.get('http://localhost:5000/api/projects', {
+    const res = await axios.get(apiRoutes.projects.getAll, {
       headers: { Authorization: `Bearer ${token}` }
     });
     return res.data;
@@ -28,7 +29,7 @@ export const addProjectAsync = createAsyncThunk('projects/addProject', async (pr
       created_by: projectData.created_by,
     };
     const token = getState().auth.token;
-    const res = await axios.post('http://localhost:5000/api/projects', payload, {
+    const res = await axios.post(apiRoutes.projects.create, payload, {
       headers: { Authorization: `Bearer ${token}` }
     });
     return { ...projectData, project_id: res.data.project_id };
@@ -52,7 +53,7 @@ export const updateProjectAsync = createAsyncThunk('projects/updateProject', asy
     };
     const { project_id } = projectData;
     const token = getState().auth.token;
-    await axios.put(`http://localhost:5000/api/projects/${project_id}`, payload, {
+    await axios.put(apiRoutes.projects.update(project_id), payload, {
       headers: { Authorization: `Bearer ${token}` }
     });
     return projectData;
@@ -65,7 +66,7 @@ export const updateProjectAsync = createAsyncThunk('projects/updateProject', asy
 export const deleteProjectAsync = createAsyncThunk('projects/deleteProject', async (projectId, { getState, rejectWithValue }) => {
   try {
     const token = getState().auth.token;
-    await axios.delete(`http://localhost:5000/api/projects/${projectId}`, {
+    await axios.delete(apiRoutes.projects.delete(projectId), {
       headers: { Authorization: `Bearer ${token}` }
     });
     return projectId;

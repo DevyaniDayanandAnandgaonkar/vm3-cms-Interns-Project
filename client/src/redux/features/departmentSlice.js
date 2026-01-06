@@ -1,12 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-
-const API_URL = 'http://localhost:5000/api/departments';
+import { apiRoutes } from '../apiRoutes';
 
 export const fetchDepartments = createAsyncThunk('departments/fetchDepartments', async (_, { getState, rejectWithValue }) => {
   try {
     const { token } = getState().auth;
-    const response = await axios.get(API_URL, {
+    const response = await axios.get(apiRoutes.departments.getAll, {
       headers: { Authorization: `Bearer ${token}` }
     });
     return response.data;
@@ -19,7 +18,7 @@ export const fetchDepartments = createAsyncThunk('departments/fetchDepartments',
 export const addDepartment = createAsyncThunk('departments/addDepartment', async (departmentData, { getState, rejectWithValue }) => {
     try {
       const { token } = getState().auth;
-      const response = await axios.post(API_URL, departmentData, {
+      const response = await axios.post(apiRoutes.departments.create, departmentData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       return response.data;
@@ -32,7 +31,7 @@ export const addDepartment = createAsyncThunk('departments/addDepartment', async
 export const updateDepartment = createAsyncThunk('departments/updateDepartment', async ({ id, departmentData }, { getState, rejectWithValue }) => {
   try {
     const { token } = getState().auth;
-    const response = await axios.put(`${API_URL}/${id}`, departmentData, {
+    const response = await axios.put(apiRoutes.departments.update(id), departmentData, {
       headers: { Authorization: `Bearer ${token}` }
     });
     return response.data;
@@ -45,7 +44,7 @@ export const updateDepartment = createAsyncThunk('departments/updateDepartment',
 export const deleteDepartment = createAsyncThunk('departments/deleteDepartment', async (id, { getState, rejectWithValue }) => {
   try {
     const { token } = getState().auth;
-    await axios.delete(`${API_URL}/${id}`, {
+    await axios.delete(apiRoutes.departments.delete(id), {
       headers: { Authorization: `Bearer ${token}` }
     });
     return id;

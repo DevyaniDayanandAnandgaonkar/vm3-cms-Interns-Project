@@ -1,6 +1,16 @@
 const bcrypt = require('bcryptjs');
 const db = require('../config/db');
 
+// Get all employees
+exports.getAllEmployees = async (req, res) => {
+    try {
+        const [rows] = await db.query('SELECT * FROM employees');
+        res.json(rows);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching employees', error });
+    }
+};
+
 // Create a new employee
 exports.createEmployee = async (req, res) => {
   const {
