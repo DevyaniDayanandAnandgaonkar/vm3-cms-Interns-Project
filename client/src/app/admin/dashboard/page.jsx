@@ -1,188 +1,13 @@
-// "use client";
-
-// import { useSelector } from "react-redux";
-// import { useRouter } from "next/navigation";
-// import { useEffect } from "react";
-
-// export default function Dashboard() {
-//   const router = useRouter();
-//   const { isAuthenticated } = useSelector((state) => state.auth);
-
-//   useEffect(() => {
-//     if (!isAuthenticated) {
-//       router.push("/admin/login");
-//     }
-//   }, [isAuthenticated]);
-
-//   return (
-//     <div className="text-white p-10">
-//       <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-//     </div>
-//   );
-// }
-
-
-// // src/app/admin/dashboard/page.jsx
-// "use client";
-
-// import { useSelector } from "react-redux";
-// import { useRouter } from "next/navigation";
-// import { useEffect, useState } from "react";
-
-// import {
-//   BarChart,
-//   Bar,
-//   XAxis,
-//   YAxis,
-//   PieChart,
-//   Pie,
-//   Cell,
-//   Tooltip,
-//   Legend,
-// } from "recharts";
-
-// import { Sidebar } from "@/components/dashboard/Sidebar";
-// // import { Topbar } from "@/components/dashboard/Topbar";
-// import Topbar from "@/components/dashboard/Topbar";
-
-// export default function Dashboard() {
-//   const router = useRouter();
-//   const { isAuthenticated } = useSelector((state) => state.auth);
-
-//   useEffect(() => {
-//     if (!isAuthenticated) {
-//       router.push("/admin/login");
-//     }
-//   }, [isAuthenticated, router]);
-
-//   const departmentData = [
-//     { name: "Sales", value: 15 },
-//     { name: "Marketing", value: 28 },
-//     { name: "HR", value: 35 },
-//     { name: "Dev", value: 10 },
-//   ];
-
-//   const projectStatusData = [
-//     { name: "Active", value: 60 },
-//     { name: "Inactive", value: 25 },
-//     { name: "Completed", value: 25 },
-//   ];
-
-//   const COLORS = ["#3b82f6", "#60a5fa", "#93c5fd"];
-
-//   const [currentPage, setCurrentPage] = useState("Dashboard");
-
-//   function handleNavigate(page) {
-//     setCurrentPage(page);
-
-//     const routeMap = {
-//       Dashboard: "/admin/dashboard",
-//       Departments: "/admin/departments",
-//       Employees: "/admin/employees",
-//       Clients: "/admin/clients",
-//       Partners: "/admin/partners",
-//       Projects: "/admin/projects",
-//     };
-
-//     router.push(routeMap[page] || "/admin/dashboard");
-//   }
-
-//   return (
-//     <div className="flex bg-gray-50 min-h-screen">
-
-//       {/* SIDEBAR — responsive */}
-//       <Sidebar currentPage={currentPage} onNavigate={handleNavigate} />
-
-//       {/* MAIN CONTENT */}
-//       <main className="flex-1 p-4 sm:p-6 md:p-10">
-
-//         {/* TOP BAR */}
-//         <Topbar currentPage={currentPage} onNavigate={handleNavigate}/>
-        
-
-//         {/* STAT CARDS — responsive grid */}
-//         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-//           <Card title="Total Employees" value="150" />
-//           <Card title="Total Clients" value="75" />
-//           <Card title="Total Projects" value="20" />
-//           <Card title="Completed Projects" value="10" />
-//         </div>
-
-//         {/* CHARTS SECTION */}
-//         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mt-10">
-
-//           {/* BAR CHART — auto shrink on mobile */}
-//           <div className="bg-white p-6 rounded-xl shadow overflow-x-auto">
-//             <h2 className="text-lg font-semibold mb-4">
-//               Employees by Department
-//             </h2>
-
-//             <div className="w-full flex justify-center">
-//               <BarChart
-//                 width={350}
-//                 height={250}
-//                 data={departmentData}
-//                 className="max-w-full"
-//               >
-//                 <XAxis dataKey="name" />
-//                 <YAxis />
-//                 <Tooltip />
-//                 <Bar dataKey="value" fill="#3b82f6" />
-//               </BarChart>
-//             </div>
-//           </div>
-
-//           {/* PIE CHART */}
-//           <div className="bg-white p-6 rounded-xl shadow flex flex-col items-center">
-//             <h2 className="text-lg font-semibold mb-4">
-//               Projects Status Overview
-//             </h2>
-
-//             <PieChart width={260} height={260}>
-//               <Pie
-//                 data={projectStatusData}
-//                 dataKey="value"
-//                 nameKey="name"
-//                 innerRadius={50}
-//                 outerRadius={90}
-//               >
-//                 {projectStatusData.map((_, i) => (
-//                   <Cell key={i} fill={COLORS[i % COLORS.length]} />
-//                 ))}
-//               </Pie>
-//               <Tooltip />
-//               <Legend />
-//             </PieChart>
-//           </div>
-//         </div>
-
-//         {/* SUMMARY BOX */}
-//         <div className="mt-12 bg-white rounded-xl shadow p-6">
-//           <h2 className="text-xl font-semibold mb-4">Summary</h2>
-//           <p className="text-gray-500">
-//             Add your custom summary or reports here…
-//           </p>
-//         </div>
-//       </main>
-//     </div>
-//   );
-// }
-
-// /* CARD COMPONENT */
-// function Card({ title, value }) {
-//   return (
-//     <div className="bg-white p-6 rounded-xl shadow text-center">
-//       <p className="text-gray-500">{title}</p>
-//       <h3 className="text-3xl font-bold mt-2">{value}</h3>
-//     </div>
-//   );
-// }
-
 "use client";
 
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
+
+import { fetchProjects } from "@/redux/features/projectSlice";
+import { fetchClients } from "@/redux/features/clientSlice";
+import { fetchDepartments } from "@/redux/features/departmentSlice";
+import { fetchEmployees } from "@/redux/features/employeeSlice";
 
 import {
   BarChart,
@@ -202,27 +27,62 @@ import Topbar from "@/components/dashboard/Topbar";
 export default function Dashboard() {
   const router = useRouter();
   const { isAuthenticated } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+
+  const { projects, loading: projectsLoading } = useSelector((state) => state.projects);
+  const { clients, loading: clientsLoading } = useSelector((state) => state.clients);
+  const { departments, loading: departmentsLoading } = useSelector((state) => state.departments);
+  const { employees, loading: employeesLoading } = useSelector((state) => state.employees);
 
   useEffect(() => {
     if (!isAuthenticated) {
       router.push("/admin/login");
+    } else {
+      dispatch(fetchProjects());
+      dispatch(fetchClients());
+      dispatch(fetchDepartments());
+      dispatch(fetchEmployees());
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, router, dispatch]);
 
-  const departmentData = [
-    { name: "Sales", value: 15 },
-    { name: "Marketing", value: 28 },
-    { name: "HR", value: 35 },
-    { name: "Devloper", value: 10 },
-  ];
+  const {
+    totalEmployees,
+    totalClients,
+    totalProjects,
+    completedProjects,
+    departmentData,
+    projectStatusData,
+  } = useMemo(() => {
+    const totalEmployees = employees.length;
+    const totalClients = clients.length;
+    const totalProjects = projects.length;
+    const completedProjects = projects.filter(p => p.status === 'Completed').length;
 
-  const projectStatusData = [
-    { name: "Active", value: 60 },
-    { name: "Inactive", value: 25 },
-    { name: "Completed", value: 25 },
-  ];
+    const departmentData = departments.map(dept => ({
+      name: dept.department_name,
+      value: employees.filter(emp => emp.department_id === dept.department_id).length
+    })).filter(d => d.value > 0);
 
-  const COLORS = ["#3b82f6", "#60a5fa", "#93c5fd"];
+    const projectStatusData = [
+      { name: 'New Project', value: projects.filter(p => p.status === 'New Project').length },
+      { name: 'Working', value: projects.filter(p => p.status === 'Working').length },
+      { name: 'On Hold', value: projects.filter(p => p.status === 'On Hold').length },
+      { name: 'Completed', value: projects.filter(p => p.status === 'Completed').length },
+    ].filter(d => d.value > 0);
+
+    return {
+      totalEmployees,
+      totalClients,
+      totalProjects,
+      completedProjects,
+      departmentData,
+      projectStatusData,
+    };
+  }, [projects, clients, departments, employees]);
+
+  const isLoading = projectsLoading || clientsLoading || departmentsLoading || employeesLoading;
+
+  const COLORS = ["#3b82f6", "#60a5fa", "#93c5fd", "#bfdbfe"];
 
   const [currentPage, setCurrentPage] = useState("Dashboard");
 
@@ -260,10 +120,10 @@ export default function Dashboard() {
 
           {/* STAT CARDS */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card  title="Total Employees" value="150"  />
-            <Card title="Total Clients" value="75" />
-            <Card title="Total Projects" value="20" />
-            <Card title="Completed Projects" value="10" />
+            <Card title="Total Employees" value={isLoading ? '...' : totalEmployees} />
+            <Card title="Total Clients" value={isLoading ? '...' : totalClients} />
+            <Card title="Total Projects" value={isLoading ? '...' : totalProjects} />
+            <Card title="Completed Projects" value={isLoading ? '...' : completedProjects} />
           </div>
 
           {/* CHARTS */}

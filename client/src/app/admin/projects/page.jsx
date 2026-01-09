@@ -50,6 +50,7 @@ export default function ProjectsPage() {
   const [isEditProjectDialogOpen, setIsEditProjectDialogOpen] = useState(false);
   const [currentProject, setCurrentProject] = useState(null);
 
+
   const isLoading = projectsLoading || clientsLoading || categoriesLoading || departmentsLoading || employeesLoading;
 
   const addForm = useForm({
@@ -73,6 +74,7 @@ export default function ProjectsPage() {
       department_id: "",
       assigned_to: "",
       status: "New Project",
+      Progress: "",
     },
   });
 
@@ -103,6 +105,7 @@ export default function ProjectsPage() {
         department_id: String(currentProject.department_id) || "",
         assigned_to: String(currentProject.assigned_to) || "",
         status: currentProject.status || "New Project",
+        Progress: currentProject.Progress || 0,
       });
     }
   }, [isEditProjectDialogOpen, currentProject, editForm]);
@@ -141,6 +144,7 @@ export default function ProjectsPage() {
       client_id: parseInt(values.client_id) || null,
       department_id: parseInt(values.department_id) || null,
       assigned_to: parseInt(values.assigned_to) || null,
+      Progress: parseInt(values.Progress) || 0,
       created_by: currentProject.created_by,
     };
     await dispatch(updateProjectAsync(projectData));
@@ -506,6 +510,19 @@ export default function ProjectsPage() {
                             </FormItem>
                           )}
                         />
+                        <FormField
+                          control={editForm.control}
+                          name="Progress"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Progress</FormLabel>
+                              <FormControl>
+                                <Input type="number" placeholder="Enter progress (0-100)" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
                         <Button type="submit" className="w-full" disabled={isLoading}>
                           {isLoading ? "Updating..." : "Update Project"}
                         </Button>
@@ -578,15 +595,11 @@ export default function ProjectsPage() {
                       </td>
 
                       {/* Progress */}
-                      <td className="p-4 w-48">
-                        <div className="flex items-center gap-2">
-                          <div className="w-full bg-gray-600 h-2 rounded-full">
-                            <div
-                              className="h-2 rounded-full bg-blue-500"
-                              style={{ width: `${project.progress || 0}%` }}
-                            />
-                          </div>
-                          <span>{project.progress || 0}%</span>
+                      <td className="p-4 w-32">
+                        <div className="flex items-center justify-center">
+                          <span className="text-sm font-medium text-gray-300">
+                            {project.Progress ?? 0}%
+                          </span>
                         </div>
                       </td>
 

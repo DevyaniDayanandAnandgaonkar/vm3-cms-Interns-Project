@@ -29,10 +29,10 @@ exports.getProjectById = async (req, res) => {
 // Create a new project
 exports.createProject = async (req, res) => {
     try {
-        const { project_name, description, category_id, client_id, department_id, assigned_to, status, created_by } = req.body;
+        const { project_name, description, category_id, client_id, department_id, assigned_to, status, created_by, Progress } = req.body;
         const [result] = await db.query(
-            'INSERT INTO projects (project_name, description, category_id, client_id, department_id, assigned_to, status, created_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-            [project_name, description, category_id, client_id, department_id, assigned_to, status, created_by]
+            'INSERT INTO projects (project_name, description, category_id, client_id, department_id, assigned_to, status, created_by, Progress) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            [project_name, description, category_id, client_id, department_id, assigned_to, status, created_by, Progress || 0]
         );
         res.status(201).json({ message: 'Project created successfully', project_id: result.insertId });
     } catch (err) {
@@ -45,10 +45,10 @@ exports.createProject = async (req, res) => {
 exports.updateProject = async (req, res) => {
     try {
         const { id } = req.params;
-        const { project_name, description, category_id, client_id, department_id, assigned_to, status, created_by } = req.body;
+        const { project_name, description, category_id, client_id, department_id, assigned_to, status, created_by, Progress } = req.body;
         const [result] = await db.query(
-            'UPDATE projects SET project_name = ?, description = ?, category_id = ?, client_id = ?, department_id = ?, assigned_to = ?, status = ?, created_by = ? WHERE project_id = ?',
-            [project_name, description, category_id, client_id, department_id, assigned_to, status, created_by, id]
+            'UPDATE projects SET project_name = ?, description = ?, category_id = ?, client_id = ?, department_id = ?, assigned_to = ?, status = ?, created_by = ?, Progress = ? WHERE project_id = ?',
+            [project_name, description, category_id, client_id, department_id, assigned_to, status, created_by, Progress, id]
         );
         if (result.affectedRows === 0) {
             return res.status(404).json({ message: 'Project not found' });

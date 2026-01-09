@@ -50,6 +50,7 @@ export const updateProjectAsync = createAsyncThunk('projects/updateProject', asy
       assigned_to: projectData.assigned_to,
       status: projectData.status,
       created_by: projectData.created_by,
+      Progress: projectData.Progress,
     };
     const { project_id } = projectData;
     const token = getState().auth.token;
