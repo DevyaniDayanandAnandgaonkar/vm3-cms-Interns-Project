@@ -66,6 +66,7 @@ import {
   FolderKanban,
   UserCircle,
   Settings,
+  Share2,
 } from "lucide-react";
 
 const menu = [
@@ -75,6 +76,7 @@ const menu = [
   { icon: CalendarDays, label: "Leaves", path: "/employee/leaves" },
   { icon: FolderKanban, label: "Projects", path: "/employee/projects" },
   { icon: UserCircle, label: "Profile", path: "/employee/profile" },
+  { icon: Share2, label: "Social Media", path: "/employee/social-media" },
   { icon: Settings, label: "Settings", path: "/employee/settings" },
 ];
 

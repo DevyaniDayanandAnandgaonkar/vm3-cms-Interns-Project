@@ -12,6 +12,14 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
+function formatDateDDMMYYYY(dateStr) {
+  const d = new Date(dateStr);
+  const dd = String(d.getDate()).padStart(2, '0');
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const yyyy = d.getFullYear();
+  return `${dd}/${mm}/${yyyy}`;
+}
+
 export default function DashboardPage() {
   const router = useRouter();
 
@@ -161,7 +169,7 @@ export default function DashboardPage() {
                 <div className="flex gap-4 text-sm text-gray-400">
                   <div className="flex items-center gap-1">
                     <Clock className="w-4 h-4" />
-                    {new Date(task.dueDate).toLocaleDateString()}
+                    {formatDateDDMMYYYY(task.dueDate)}
                   </div>
                   {getStatusBadge(task.status)}
                 </div>
