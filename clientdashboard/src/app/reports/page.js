@@ -1,10 +1,11 @@
 "use client";
 import { useState } from "react";
 
-import { 
+import {
   Download, ChevronDown, FileText, TrendingUp, 
   DollarSign, Clock 
 } from "lucide-react";
+import { Button } from '@/components/ui/button';
 
 import {
   PieChart,
@@ -38,14 +39,15 @@ const FilterSection = () => {
        
         <div className="relative">
           <label className="block text-gray-700 text-sm font-medium mb-2">Report Type</label>
-          <button
+          <Button
+            variant="outline"
             type="button"
             onClick={() => { setIsReportOpen(!isReportOpen); setIsDateOpen(false); }}
-            className="flex w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-500"
+            className="flex w-full items-center justify-between px-3 py-2 text-sm"
           >
             <span>{reportType}</span>
             <ChevronDown className="h-4 w-4 opacity-50" />
-          </button>
+          </Button>
           {isReportOpen && (
             <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg">
               {reportOptions.map((option) => (
@@ -59,14 +61,15 @@ const FilterSection = () => {
       
         <div className="relative">
           <label className="block text-gray-700 text-sm font-medium mb-2">Date Range</label>
-          <button
+          <Button
+            variant="outline"
             type="button"
             onClick={() => { setIsDateOpen(!isDateOpen); setIsReportOpen(false); }}
-            className="flex w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-500"
+            className="flex w-full items-center justify-between px-3 py-2 text-sm"
           >
             <span>{dateRange}</span>
             <ChevronDown className="h-4 w-4 opacity-50" />
-          </button>
+          </Button>
           {isDateOpen && (
             <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg">
               {dateOptions.map((option) => (
@@ -402,13 +405,13 @@ export default function Page() {
           <h1 className="font-semibold text-2xl">Reports</h1>
           <p className="text-gray-600">Analyze your project data and progress</p>
         </div>
-        <div>
-          <button className="inline-flex mr-2 items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors border border-gray-200 bg-white text-gray-900 hover:bg-gray-100 h-9 px-4 py-2" onClick={() => alert("Exporting PDF...")}>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" onClick={() => alert("Exporting PDF...") }>
             <Download className="w-4 h-4" /> Export PDF
-          </button>
-          <button className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors border border-gray-200 bg-white text-gray-900 hover:bg-gray-100 h-9 px-4 py-2" onClick={() => alert("Exporting Excel...")}>
+          </Button>
+          <Button variant="outline" onClick={() => alert("Exporting Excel...") }>
             <Download className="w-4 h-4" /> Export Excel
-          </button>
+          </Button>
         </div>
       </div>
 

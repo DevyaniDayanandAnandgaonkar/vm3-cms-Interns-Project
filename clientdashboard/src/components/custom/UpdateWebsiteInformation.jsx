@@ -18,7 +18,11 @@ export default function UpdateWebsiteInformation() {
     <Dialog className="w-fit">
       <DialogTrigger>
         <div>
-          <button className="p-2 border-2 rounded-xl flex gap-2 items-center hover:bg-gray-100">
+          <div
+            role="button"
+            tabIndex={0}
+            className="p-2 border-2 rounded-xl flex gap-2 items-center hover:bg-gray-200 cursor-pointer"
+          >
             <div>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -36,8 +40,8 @@ export default function UpdateWebsiteInformation() {
                 <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"></path>
               </svg>
             </div>
-            <p>Edit</p>
-          </button>
+            <span>Edit</span>
+          </div>
         </div>
       </DialogTrigger>
       <DialogContent>

@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/card";
 
 import { Progress } from "@/components/ui/progress";
+import { Button } from '@/components/ui/button';
 
 export default function Home() {
   const cardData = [
@@ -295,12 +296,8 @@ function ReportCard({ svg, title, text }) {
         <p>{text}</p>
       </CardContent>
       <CardFooter className="flex gap-2">
-        <button className="bg-black text-white p-2 border rounded-xl">
-          Download Report
-        </button>
-        <button className="border hover:bg-gray-100 p-2 rounded-xl">
-          View Details
-        </button>
+        <Button>Download Report</Button>
+        <Button variant="outline">View Details</Button>
       </CardFooter>
     </Card>
   );

@@ -5,6 +5,7 @@ import {
   Share2, Instagram, Linkedin, Youtube, Twitter, 
   Eye, EyeOff, Pen, Trash2, Clock, CircleCheck, CircleX, Upload 
 } from "lucide-react";
+import { Button } from '@/components/ui/button';
 
 
 const ProfileCard = ({ profile, onDelete, onUpdate }) => {
@@ -78,23 +79,20 @@ const ProfileCard = ({ profile, onDelete, onUpdate }) => {
                 <p className="text-gray-900 font-medium">
                   {showPassword ? profile.password : "••••••••••"}
                 </p>
-                <button onClick={() => setShowPassword(!showPassword)} className="text-gray-400 hover:text-gray-600">
+                <Button variant="ghost" size="icon" onClick={() => setShowPassword(!showPassword)} className="text-gray-400 hover:text-gray-600">
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
+                </Button>
               </div>
             </div>
           </div>
         </div>
         <div className="flex gap-2">
-          <button onClick={() => setIsModalOpenSecound(true)} className="inline-flex items-center justify-center h-8 w-8 rounded-md border border-gray-200 bg-white text-gray-700 hover:bg-gray-50">
+          <Button onClick={() => setIsModalOpenSecound(true)} variant="ghost" size="sm" className="h-8 w-8 p-0 flex items-center justify-center">
             <Pen className="w-4 h-4" />
-          </button>
-          <button 
-            onClick={() => onDelete(profile.id)}
-            className="inline-flex items-center justify-center h-8 w-8 rounded-md border border-gray-200 bg-white text-red-600 hover:bg-red-50 hover:border-red-200"
-          >
+          </Button>
+          <Button onClick={() => onDelete(profile.id)} variant="ghost" size="sm" className="h-8 w-8 p-0 flex items-center justify-center text-red-500">
             <Trash2 className="w-4 h-4" />
-          </button>
+          </Button>
         </div>
       </div>
       
@@ -110,7 +108,7 @@ const ProfileCard = ({ profile, onDelete, onUpdate }) => {
           <div className="flex items-center gap-2"><CircleX className="w-4 h-4 text-red-600" /><div><p className="text-gray-900 font-bold">0</p><p className="text-xs text-gray-500 uppercase">Rejected</p></div></div>
         </div>
         <div className="flex gap-2">
-          <button className="inline-flex items-center justify-center h-9 px-4 rounded-md bg-black text-white hover:bg-gray-800 text-sm font-medium"><Upload className="w-4 h-4 mr-2" />Upload Post</button>
+          <Button variant="secondary"><Upload className="w-4 h-4 mr-2" />Upload Post</Button>
         </div>
       </div>
 
@@ -123,22 +121,23 @@ const ProfileCard = ({ profile, onDelete, onUpdate }) => {
             <div className="flex justify-between items-center p-4 border-b">
               <h5 className="text-xl font-medium">Edit Social Media Profile</h5>
               
-              <button onClick={() => setIsModalOpenSecound(false)} className="text-gray-500 hover:text-gray-700 font-bold text-2xl leading-none">&times;</button>
+              <Button onClick={() => setIsModalOpenSecound(false)} variant="ghost" className="text-gray-400 text-2xl">&times;</Button>
             </div>
 
             
             <div className="p-4 space-y-4">
               
               
-              <div className="relative">
+                <div className="relative">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Platform</label>
-                <button
+                <Button
+                  variant="outline"
                   type="button"
                   onClick={() => { setIsDropdownOpenSecound(!isDropdownOpenSecound); setIsAccountTypeOpen(false); }}
-                  className="w-full p-2 border border-gray-300 rounded-md bg-white text-left flex justify-between items-center focus:ring-2 focus:ring-gray-500"
+                  className="w-full p-2 text-left flex justify-between items-center"
                 >
                   {selectedPlatform} <span className="text-gray-500 text-xs">▼</span>
-                </button>
+                </Button>
                 {isDropdownOpenSecound && (
                   <div className="absolute z-20 w-full mt-2 bg-white border border-gray-200 rounded-md shadow-lg p-2 max-h-60 overflow-y-auto" style={{ scrollbarWidth: 'none' }}>
                     <style jsx>{`div::-webkit-scrollbar { display: none; }`}</style>
@@ -152,15 +151,16 @@ const ProfileCard = ({ profile, onDelete, onUpdate }) => {
               </div>
 
           
-              <div className="relative">
+                <div className="relative">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Account Type</label>
-                <button
+                <Button
+                  variant="outline"
                   type="button"
                   onClick={() => { setIsAccountTypeOpen(!isAccountTypeOpen); setIsDropdownOpenSecound(false); }}
-                  className="w-full p-2 border border-gray-300 rounded-md bg-white text-left flex justify-between items-center focus:ring-2 focus:ring-gray-500"
+                  className="w-full p-2 text-left flex justify-between items-center"
                 >
                   {selectedAccountType} <span className="text-gray-500 text-xs">▼</span>
-                </button>
+                </Button>
                 {isAccountTypeOpen && (
                   <div className="absolute z-20 w-full mt-2 bg-white border border-gray-200 rounded-md shadow-lg p-2" style={{ scrollbarWidth: 'none' }}>
                       {accountTypes.map((item) => (
@@ -197,9 +197,8 @@ const ProfileCard = ({ profile, onDelete, onUpdate }) => {
 
            
             <div className="flex justify-end gap-2 p-4 border-t bg-gray-50">
-              <button onClick={() => setIsModalOpenSecound(false)} className="px-4 py-2 bg-white hover:bg-gray-100 text-black border-2 border-gray-300 rounded-lg">Close</button>
-              
-              <button onClick={updateProfile} className="px-4 py-2 bg-black hover:bg-gray-800 rounded text-white">Save Changes</button>
+              <Button onClick={() => setIsModalOpenSecound(false)} variant="outline">Close</Button>
+              <Button onClick={updateProfile} variant="success">Save Changes</Button>
             </div>
             
           </div>
@@ -273,12 +272,9 @@ export default function Page() {
           <p className="text-gray-600">Manage your social media accounts and content</p>
         </div>
         <div>
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="bg-black hover:bg-gray-800 text-white font-bold py-2 px-4 rounded flex items-center gap-2"
-          >
+          <Button onClick={() => setIsModalOpen(true)} className="flex items-center gap-2">
             <span className="pr-2">+</span> Add Profile
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -307,15 +303,15 @@ export default function Page() {
           <div className="bg-white rounded-lg shadow-2xl border border-gray-200 w-full max-w-md mx-4 overflow-visible relative">
             <div className="flex justify-between items-center p-4 border-b">
               <h5 className="text-xl font-medium">Add Social Media Profile</h5>
-              <button onClick={() => setIsModalOpen(false)} className="text-gray-500 hover:text-gray-700 font-bold text-2xl leading-none">&times;</button>
+              <Button variant="ghost" className="text-gray-500 hover:text-gray-700 font-bold text-2xl leading-none" onClick={() => setIsModalOpen(false)}>&times;</Button>
             </div>
             <div className="p-4 space-y-4">
            
               <div className="relative">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Platform</label>
-                <button type="button" onClick={() => { setIsDropdownOpen(!isDropdownOpen); setIsAccountTypeOpen(false); }} className="w-full p-2 border border-gray-300 rounded-md bg-white text-left flex justify-between items-center focus:ring-2 focus:ring-gray-500">
+                <Button type="button" variant="outline" onClick={() => { setIsDropdownOpen(!isDropdownOpen); setIsAccountTypeOpen(false); }} className="w-full p-2 text-left flex justify-between items-center">
                   {selectedPlatform} <span className="text-gray-500 text-xs">▼</span>
-                </button>
+                </Button>
                 {isDropdownOpen && (
                   <div className="absolute z-20 w-full mt-2 bg-white border border-gray-200 rounded-md shadow-lg p-2 max-h-60 overflow-y-auto" style={{ scrollbarWidth: 'none' }}>
                     <style jsx>{`div::-webkit-scrollbar { display: none; }`}</style>
@@ -330,9 +326,9 @@ export default function Page() {
              
               <div className="relative">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Account Type</label>
-                <button type="button" onClick={() => { setIsAccountTypeOpen(!isAccountTypeOpen); setIsDropdownOpen(false); }} className="w-full p-2 border border-gray-300 rounded-md bg-white text-left flex justify-between items-center focus:ring-2 focus:ring-gray-500">
+                <Button type="button" variant="outline" onClick={() => { setIsAccountTypeOpen(!isAccountTypeOpen); setIsDropdownOpen(false); }} className="w-full p-2 text-left flex justify-between items-center">
                   {selectedAccountType} <span className="text-gray-500 text-xs">▼</span>
-                </button>
+                </Button>
                 {isAccountTypeOpen && (
                   <div className="absolute z-20 w-full mt-2 bg-white border border-gray-200 rounded-md shadow-lg p-2" style={{ scrollbarWidth: 'none' }}>
                       {accountTypes.map((item) => (
@@ -354,8 +350,8 @@ export default function Page() {
               </div>
             </div>
             <div className="flex justify-end gap-2 p-4 border-t bg-gray-50">
-              <button onClick={() => setIsModalOpen(false)} className="px-4 py-2 bg-white hover:bg-gray-100 text-black border-2 border-gray-300 rounded-lg">Close</button>
-              <button onClick={handleAddProfile} className="px-4 py-2 bg-black hover:bg-gray-800 rounded text-white">Add Profile</button>
+              <Button variant="outline" onClick={() => setIsModalOpen(false)}>Close</Button>
+              <Button onClick={handleAddProfile}>Add Profile</Button>
             </div>
           </div>
         </div>

@@ -1,5 +1,6 @@
 "use client";
 import { User, Mail, Phone, Building, Lock, Bell, Shield } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { useState, useMemo } from 'react';
 import { toast } from 'sonner';
 
@@ -178,9 +179,7 @@ export default function ClientSettings(props) {
           </div>
 
           <div className="flex justify-end">
-            <button onClick={handleProfileUpdate} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">
-              Save Profile Changes
-            </button>
+            <Button onClick={handleProfileUpdate} variant="default">Save Profile Changes</Button>
           </div>
         </div>
       </div>
@@ -233,9 +232,7 @@ export default function ClientSettings(props) {
           </div>
 
           <div className="flex justify-end">
-            <button onClick={handlePasswordChange} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">
-              Change Password
-            </button>
+            <Button onClick={handlePasswordChange} variant="default">Change Password</Button>
           </div>
         </div>
       </div>
@@ -334,9 +331,7 @@ export default function ClientSettings(props) {
           </div>
 
           <div className="flex justify-end pt-4">
-            <button onClick={handleNotificationUpdate} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">
-              Save Notification Settings
-            </button>
+            <Button onClick={handleNotificationUpdate} variant="default">Save Notification Settings</Button>
           </div>
         </div>
       </div>

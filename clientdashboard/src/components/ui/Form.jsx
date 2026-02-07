@@ -57,7 +57,7 @@ function FormItem({ className, ...props }) {
     <FormItemContext.Provider value={{ id }}>
       <div
         data-slot="form-item"
-        className={cn("grid gap-2", className)}
+        className={cn("grid gap-2 bg-gray-800 p-4 rounded-md border border-gray-700", className)}
         {...props}
       />
     </FormItemContext.Provider>
@@ -71,7 +71,7 @@ function FormLabel({ className, ...props }) {
     <Label
       data-slot="form-label"
       data-error={!!error}
-      className={cn("data-[error=true]:text-destructive", className)}
+      className={cn("data-[error=true]:text-red-400 text-gray-200", className)}
       htmlFor={formItemId}
       {...props}
     />
@@ -100,7 +100,7 @@ function FormDescription({ className, ...props }) {
     <p
       data-slot="form-description"
       id={formDescriptionId}
-      className={cn("text-muted-foreground text-sm", className)}
+      className={cn("text-gray-300 text-sm", className)}
       {...props}
     />
   );
@@ -118,7 +118,7 @@ function FormMessage({ className, ...props }) {
     <p
       data-slot="form-message"
       id={formMessageId}
-      className={cn("text-destructive text-sm", className)}
+      className={cn("text-red-400 text-sm", className)}
       {...props}
     >
       {body}

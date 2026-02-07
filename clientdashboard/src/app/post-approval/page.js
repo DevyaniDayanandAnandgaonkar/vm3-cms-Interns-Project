@@ -1,6 +1,7 @@
 "use client";
 import { Search, Image as ImageIcon, Video, FileText, CheckCircle, XCircle, Clock, Eye, MessageSquare } from 'lucide-react';
 import { useState, useMemo } from 'react';
+import { Button } from '@/components/ui/button';
 
 // All posts data (in production, this would come from an API)
 const allPosts = [
@@ -301,18 +302,18 @@ export default function ClientPostApproval(props) {
               )}
 
               <div className="flex gap-2 pt-2">
-                <button onClick={() => { setSelectedPost(post); setIsViewDialogOpen(true); }} className="flex-1 border rounded-md px-3 py-2 flex items-center justify-center gap-2">
+                <Button variant="outline" className="flex-1" onClick={() => { setSelectedPost(post); setIsViewDialogOpen(true); }}>
                   <Eye className="w-4 h-4" /> View
-                </button>
+                </Button>
 
                 {post.status === 'Pending' && (
-                  <> 
-                    <button onClick={() => { setSelectedPost(post); setIsApproveDialogOpen(true); }} className="flex-1 bg-green-600 text-white rounded-md px-3 py-2 flex items-center justify-center gap-2">
+                  <>
+                    <Button variant="success" className="flex-1" onClick={() => { setSelectedPost(post); setIsApproveDialogOpen(true); }}>
                       <CheckCircle className="w-4 h-4" /> Approve
-                    </button>
-                    <button onClick={() => { setSelectedPost(post); setIsRejectDialogOpen(true); }} className="flex-1 bg-red-600 text-white rounded-md px-3 py-2 flex items-center justify-center gap-2">
+                    </Button>
+                    <Button className="flex-1" onClick={() => { setSelectedPost(post); setIsRejectDialogOpen(true); }}>
                       <XCircle className="w-4 h-4" /> Reject
-                    </button>
+                    </Button>
                   </>
                 )}
               </div>
@@ -380,7 +381,7 @@ export default function ClientPostApproval(props) {
               )}
             </div>
             <div className="mt-4 flex justify-end">
-              <button onClick={() => setIsViewDialogOpen(false)} className="px-4 py-2 rounded-md border">Close</button>
+              <Button variant="outline" onClick={() => setIsViewDialogOpen(false)}>Close</Button>
             </div>
           </div>
         </div>
@@ -396,8 +397,8 @@ export default function ClientPostApproval(props) {
             <label className="block text-sm text-gray-600 mb-1">Comment (Optional)</label>
             <textarea value={clientComment} onChange={(e) => setClientComment(e.target.value)} placeholder="Add any comments or feedback..." rows={3} className="w-full rounded-md border px-3 py-2 mb-4" />
             <div className="flex justify-end gap-2">
-              <button onClick={() => setIsApproveDialogOpen(false)} className="px-4 py-2 rounded-md border">Cancel</button>
-              <button onClick={handleApprovePost} className="px-4 py-2 rounded-md bg-green-600 text-white">Approve Post</button>
+              <Button variant="outline" onClick={() => setIsApproveDialogOpen(false)}>Cancel</Button>
+              <Button variant="success" onClick={handleApprovePost}>Approve Post</Button>
             </div>
           </div>
         </div>
@@ -413,8 +414,8 @@ export default function ClientPostApproval(props) {
             <label className="block text-sm text-gray-600 mb-1">Reason for Rejection (Required)</label>
             <textarea value={clientComment} onChange={(e) => setClientComment(e.target.value)} placeholder="Provide a reason for rejection..." rows={3} className="w-full rounded-md border px-3 py-2 mb-4" />
             <div className="flex justify-end gap-2">
-              <button onClick={() => setIsRejectDialogOpen(false)} className="px-4 py-2 rounded-md border">Cancel</button>
-              <button onClick={handleRejectPost} className="px-4 py-2 rounded-md bg-red-600 text-white" disabled={!clientComment.trim()}>Reject Post</button>
+              <Button variant="outline" onClick={() => setIsRejectDialogOpen(false)}>Cancel</Button>
+              <Button onClick={handleRejectPost} disabled={!clientComment.trim()}>Reject Post</Button>
             </div>
           </div>
         </div>
