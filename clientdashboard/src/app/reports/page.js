@@ -34,11 +34,11 @@ const FilterSection = () => {
   const dateOptions = ["Last Month", "Last 7 Days", "Last 24 Hours", "This Year"];
 
   return (
-    <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+    <div className="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-sm">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
        
         <div className="relative">
-          <label className="block text-gray-700 text-sm font-medium mb-2">Report Type</label>
+          <label className="block text-white text-sm font-medium mb-2">Report Type</label>
           <Button
             variant="outline"
             type="button"
@@ -60,7 +60,7 @@ const FilterSection = () => {
         </div>
       
         <div className="relative">
-          <label className="block text-gray-700 text-sm font-medium mb-2">Date Range</label>
+          <label className="block text-white text-sm font-medium mb-2">Date Range</label>
           <Button
             variant="outline"
             type="button"
@@ -88,7 +88,7 @@ const FilterSection = () => {
 
 const StatCard = ({ title, value, icon, bgClass, iconClass, footer }) => {
   return (
-    <div className="bg-white text-gray-900 flex flex-col gap-6 rounded-xl border border-gray-200 p-6 shadow-sm mt-6">
+    <div className="bg-gray-800 text-white flex flex-col gap-6 rounded-xl border border-gray-700 p-6 shadow-sm mt-6">
       
   
       <div className="flex items-center justify-between mb-4">
@@ -100,8 +100,8 @@ const StatCard = ({ title, value, icon, bgClass, iconClass, footer }) => {
 
       
       <div className="space-y-1">
-        <p className="text-gray-600 text-sm font-medium">{title}</p>
-        <p className="text-3xl font-bold text-gray-900">{value}</p>
+        <p className="text-gray-400 text-sm font-medium">{title}</p>
+        <p className="text-3xl font-bold text-white">{value}</p>
         
         
         <div className="text-sm font-medium">
@@ -132,8 +132,8 @@ const ChartsSection = () => {
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
       
      
-      <div className="bg-white text-gray-900 flex flex-col gap-6 rounded-xl border border-gray-200 p-6 shadow-sm">
-        <h2 className="text-gray-900 font-semibold mb-4">Project Status Distribution</h2>
+      <div className="bg-gray text-gray-900 flex flex-col gap-6 rounded-xl border border-gray-200 p-6 shadow-sm">
+        <h2 className="text-white font-semibold mb-4">Project Status Distribution</h2>
         
         <div className="h-[300px] w-full">
           <ResponsiveContainer width="100%" height="100%">
@@ -159,8 +159,8 @@ const ChartsSection = () => {
       </div>
 
       
-      <div className="bg-white text-gray-900 flex flex-col gap-6 rounded-xl border border-gray-200 p-6 shadow-sm">
-        <h2 className="text-gray-900 font-semibold mb-4">Monthly Project Progress</h2>
+      <div className="bg-gray text-gray-900 flex flex-col gap-6 rounded-xl border border-gray-200 p-6 shadow-sm">
+        <h2 className="text-white font-semibold mb-4">Monthly Project Progress</h2>
         
         <div className="h-[300px] w-full">
           <ResponsiveContainer width="100%" height="100%">
@@ -222,8 +222,8 @@ const BudgetChart = () => {
   ];
 
   return (
-    <div className="bg-white text-gray-900 flex flex-col gap-6 rounded-xl border border-gray-200 p-6 shadow-sm mt-6">
-      <h2 className="text-gray-900 font-semibold mb-4 text-lg">Budget vs Spent Analysis</h2>
+    <div className="bg-gray text-gray-900 flex flex-col gap-6 rounded-xl border border-gray-200 p-6 shadow-sm mt-6">
+      <h2 className="text-white font-semibold mb-4 text-lg">Budget vs Spent Analysis</h2>
       
       <div className="h-[300px] w-full">
         <ResponsiveContainer width="100%" height="100%">
@@ -321,35 +321,35 @@ const ProjectDetailsTable = () => {
   };
 
   return (
-    <div className="bg-white text-gray-900 flex flex-col gap-6 rounded-xl border border-gray-200 p-6 shadow-sm mt-6">
-      <h2 className="text-gray-900 font-semibold mb-4 text-lg">Project Details</h2>
+    <div className="bg-gray text-gray-900 flex flex-col gap-6 rounded-xl border border-gray-200 p-6 shadow-sm mt-6">
+      <h2 className="text-white font-semibold mb-4 text-lg">Project Details</h2>
       
    
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
             <tr className="border-b border-gray-200">
-              <th className="text-left py-3 px-4 text-gray-700 font-medium">Project</th>
-              <th className="text-left py-3 px-4 text-gray-700 font-medium">Status</th>
-              <th className="text-left py-3 px-4 text-gray-700 font-medium">Budget</th>
-              <th className="text-left py-3 px-4 text-gray-700 font-medium">Spent</th>
-              <th className="text-left py-3 px-4 text-gray-700 font-medium">Remaining</th>
-              <th className="text-left py-3 px-4 text-gray-700 font-medium">Progress</th>
+              <th className="text-left py-3 px-4 text-white font-medium">Project</th>
+              <th className="text-left py-3 px-4 text-white font-medium">Status</th>
+              <th className="text-left py-3 px-4 text-white font-medium">Budget</th>
+              <th className="text-left py-3 px-4 text-white font-medium">Spent</th>
+              <th className="text-left py-3 px-4 text-white font-medium">Remaining</th>
+              <th className="text-left py-3 px-4 text-white font-medium">Progress</th>
             </tr>
           </thead>
           <tbody>
             {projects.map((project, index) => (
               <tr key={index} className="border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors">
-                <td className="py-3 px-4 text-gray-900">{project.name}</td>
+                <td className="py-3 px-4 text-white">{project.name}</td>
                 <td className="py-3 px-4">
                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusStyle(project.status)}`}>
                     {project.status}
                   </span>
                 </td>
-                <td className="py-3 px-4 text-gray-600">{project.budget}</td>
-                <td className="py-3 px-4 text-gray-600">{project.spent}</td>
-                <td className="py-3 px-4 text-gray-600">{project.remaining}</td>
-                <td className="py-3 px-4 text-gray-900 font-medium">{project.progress}</td>
+                <td className="py-3 px-4 text-gray-400">{project.budget}</td>
+                <td className="py-3 px-4 text-gray-400">{project.spent}</td>
+                <td className="py-3 px-4 text-gray-400">{project.remaining}</td>
+                <td className="py-3 px-4 text-white font-medium">{project.progress}</td>
               </tr>
             ))}
           </tbody>

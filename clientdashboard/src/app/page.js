@@ -196,7 +196,7 @@ export default function Home() {
 
       {/* project by type */}
 
-      <div className="h-fit w-full border rounded-xl mt-10 p-5 bg-white">
+      <div className="h-fit w-full border rounded-xl mt-10 p-5 bg-gray-800">
         <div className="flex gap-2">
           <div>
             <svg
@@ -219,17 +219,17 @@ export default function Home() {
             </svg>
           </div>
 
-          <p className=" text-gray-600 mb-2">Project By Type</p>
+          <p className=" text-white mb-2">Project By Type</p>
         </div>
 
         <div className="flex gap-5 mt-10 ">
           <div className="flex gap-45 border p-5 rounded-xl">
             <p>Development</p>
-            <p className="bg-gray-200 rounded-2xl  p-1">2 Projects</p>
+            <p className="bg-gray-700 rounded-2xl  p-1">2 Projects</p>
           </div>
           <div className="flex gap-45 border p-5 rounded-xl">
             <p>Degital Marketing</p>
-            <p className="bg-gray-200 rounded-2xl  p-1">1 Project</p>
+            <p className="bg-gray-700 rounded-2xl  p-1">1 Project</p>
           </div>
         </div>
       </div>

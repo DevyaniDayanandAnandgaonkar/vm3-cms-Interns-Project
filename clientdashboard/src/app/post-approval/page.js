@@ -184,17 +184,17 @@ export default function ClientPostApproval(props) {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-gray-900 mb-2">Post Approval</h1>
-        <p className="text-gray-600">Review and approve posts created for your social media accounts</p>
+        <h1 className="text-white mb-2">Post Approval</h1>
+        <p className="text-gray-400">Review and approve posts created for your social media accounts</p>
       </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="p-6 bg-white rounded-md shadow">
+        <div className="p-6 bg-gray-800 rounded-md shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-600 mb-1">Pending Review</p>
-              <p className="text-gray-900">{statusCounts.pending}</p>
+              <p className="text-gray-400 mb-1">Pending Review</p>
+              <p className="text-white">{statusCounts.pending}</p>
             </div>
             <div className="p-3 bg-yellow-50 rounded-lg">
               <Clock className="w-6 h-6 text-yellow-600" />
@@ -202,11 +202,11 @@ export default function ClientPostApproval(props) {
           </div>
         </div>
 
-        <div className="p-6 bg-white rounded-md shadow">
+        <div className="p-6 bg-gray-800 rounded-md shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-600 mb-1">Approved</p>
-              <p className="text-gray-900">{statusCounts.approved}</p>
+              <p className="text-gray-400 mb-1">Approved</p>
+              <p className="text-white">{statusCounts.approved}</p>
             </div>
             <div className="p-3 bg-green-50 rounded-lg">
               <CheckCircle className="w-6 h-6 text-green-600" />
@@ -214,11 +214,11 @@ export default function ClientPostApproval(props) {
           </div>
         </div>
 
-        <div className="p-6 bg-white rounded-md shadow">
+        <div className="p-6 bg-gray-800 rounded-md shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-600 mb-1">Rejected</p>
-              <p className="text-gray-900">{statusCounts.rejected}</p>
+              <p className="text-gray-400 mb-1">Rejected</p>
+              <p className="text-white">{statusCounts.rejected}</p>
             </div>
             <div className="p-3 bg-red-50 rounded-lg">
               <XCircle className="w-6 h-6 text-red-600" />
@@ -228,7 +228,7 @@ export default function ClientPostApproval(props) {
       </div>
 
       {/* Filters */}
-      <div className="p-6 bg-white rounded-md shadow">
+      <div className="p-6 bg-gray-800 rounded-md shadow">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -252,7 +252,7 @@ export default function ClientPostApproval(props) {
       {/* Posts Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredPosts.map((post) => (
-          <div key={post.id} className="p-6 bg-white rounded-md shadow">
+          <div key={post.id} className="p-6 bg-gray-800 rounded-md shadow">
             <div className="space-y-4">
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-2">
@@ -263,11 +263,11 @@ export default function ClientPostApproval(props) {
               </div>
 
               <div>
-                <p className="text-gray-600">Created: {post.created_date}</p>
+                <p className="text-gray-400">Created: {post.created_date}</p>
               </div>
 
-              <div className="border border-gray-200 rounded-lg p-3">
-                <p className="text-gray-700 line-clamp-3">{post.content}</p>
+              <div className="border border-gray-700 rounded-lg p-3">
+                <p className="text-gray-300line-clamp-3">{post.content}</p>
               </div>
 
               {post.media_url && (
@@ -283,19 +283,19 @@ export default function ClientPostApproval(props) {
               )}
 
               {post.scheduled_date && (
-                <div className="flex items-center gap-2 text-gray-600">
+                <div className="flex items-center gap-2 text-gray-400">
                   <Clock className="w-4 h-4" />
                   <span>Scheduled: {post.scheduled_date}</span>
                 </div>
               )}
 
               {post.client_comment && (
-                <div className="border-t border-gray-200 pt-3">
+                <div className="border-t border-gray-700 pt-3">
                   <div className="flex items-start gap-2">
                     <MessageSquare className="w-4 h-4 text-gray-500 mt-1" />
                     <div>
-                      <p className="text-gray-600">Your Feedback:</p>
-                      <p className="text-gray-700">{post.client_comment}</p>
+                      <p className="text-gray-400">Your Feedback:</p>
+                      <p className="text-gray-300">{post.client_comment}</p>
                     </div>
                   </div>
                 </div>
@@ -323,10 +323,10 @@ export default function ClientPostApproval(props) {
 
         {filteredPosts.length === 0 && (
           <div className="col-span-full">
-            <div className="p-12 bg-white rounded-md shadow text-center">
+            <div className="p-12 bg-gray-800 rounded-md shadow text-center">
               <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-gray-900 mb-2">No Posts Found</h3>
-              <p className="text-gray-600">No posts match your current filters</p>
+              <h3 className="text-gray-200 mb-2">No Posts Found</h3>
+              <p className="text-gray-400">No posts match your current filters</p>
             </div>
           </div>
         )}
@@ -336,36 +336,36 @@ export default function ClientPostApproval(props) {
       {isViewDialogOpen && selectedPost && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div className="absolute inset-0 bg-black/50" onClick={() => setIsViewDialogOpen(false)} />
-          <div className="relative bg-white rounded-md max-w-2xl w-full p-6 z-10">
+          <div className="relative bg-gray-800 rounded-md max-w-2xl w-full p-6 z-10">
             <h3 className="text-lg font-medium mb-4">Post Details</h3>
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm text-gray-600">Platform</label>
+                  <label className="block text-sm text-gray-400">Platform</label>
                   <p className={`inline-block px-2 py-1 rounded text-sm ${getPlatformColor(selectedPost.platform)}`}>{selectedPost.platform}</p>
                 </div>
                 <div>
-                  <label className="block text-sm text-gray-600">Media Type</label>
-                  <div className="flex items-center gap-2">{getMediaIcon(selectedPost.media_type)} <span className="text-gray-900">{selectedPost.media_type}</span></div>
+                  <label className="block text-sm text-gray-400">Media Type</label>
+                  <div className="flex items-center gap-2">{getMediaIcon(selectedPost.media_type)} <span className="text-gray-300">{selectedPost.media_type}</span></div>
                 </div>
                 <div>
-                  <label className="block text-sm text-gray-600">Status</label>
+                  <label className="block text-sm text-gray-400">Status</label>
                   <div>{getStatusBadge(selectedPost.status)}</div>
                 </div>
                 <div>
-                  <label className="block text-sm text-gray-600">Created Date</label>
-                  <p className="text-gray-900">{selectedPost.created_date}</p>
+                  <label className="block text-sm text-gray-400">Created Date</label>
+                  <p className="text-gray-300">{selectedPost.created_date}</p>
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm text-gray-600">Content</label>
-                <div className="border border-gray-200 rounded-lg p-4 mt-2"><p className="text-gray-900 whitespace-pre-wrap">{selectedPost.content}</p></div>
+                <label className="block text-sm text-gray-400">Content</label>
+                <div className="border border-gray-700 rounded-lg p-4 mt-2"><p className="text-gray-300 whitespace-pre-wrap">{selectedPost.content}</p></div>
               </div>
 
               {selectedPost.media_url && (
                 <div>
-                  <label className="block text-sm text-gray-600">Media</label>
+                  <label className="block text-sm text-gray-400">Media</label>
                   <div className="border border-gray-200 rounded-lg overflow-hidden mt-2">
                     {selectedPost.media_type === 'Image' && <img src={selectedPost.media_url} alt="Post media" className="w-full" />}
                     {selectedPost.media_type === 'Video' && <div className="w-full h-64 bg-gray-100 flex items-center justify-center"><Video className="w-16 h-16 text-gray-400" /><span className="ml-2 text-gray-600">Video Content</span></div>}
