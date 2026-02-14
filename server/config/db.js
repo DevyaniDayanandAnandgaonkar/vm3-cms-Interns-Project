@@ -4,18 +4,23 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const pool = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  port: process.env.DB_PORT,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+  // host: process.env.DB_HOST,
+  host: "localhost",
+  user: "root",
+  port: 3306,
+  password: "root",
+  database: "vm3_updated",
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0
+  queueLimit: 0,
 });
 
-pool.getConnection()
-  .then(conn => { console.log("✅ MySQL connected"); conn.release(); })
-  .catch(err => console.error("❌ MySQL connection failed:", err));
+pool
+  .getConnection()
+  .then((conn) => {
+    console.log("✅ MySQL connected");
+    conn.release();
+  })
+  .catch((err) => console.error("❌ MySQL connection failed:", err));
 
 module.exports = pool;
