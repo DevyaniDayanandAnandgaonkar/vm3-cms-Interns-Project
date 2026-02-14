@@ -6,7 +6,7 @@ import { Input } from '../../../components/ui/input';
 import { Select } from '../../../components/ui/select';
 import { Textarea } from '../../../components/ui/textarea';
 import { Label } from '../../../components/ui/label';
-import Dialog from '../../../components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from '../../../components/ui/dialog';
 import { Badge } from '../../../components/ui/badge';
 
 const initialPosts = [
@@ -48,7 +48,7 @@ export default function SocialMediaApproval() {
   const [selectedPost, setSelectedPost] = useState(null);
 
   const [posts, setPosts] = useState(initialPosts);
-  
+
   const [formData, setFormData] = useState({
     client_id: '',
     client_name: '',
@@ -101,7 +101,7 @@ export default function SocialMediaApproval() {
 
   const handleEditPost = () => {
     if (!selectedPost) return;
-    setPosts(posts.map(p => p.id === selectedPost.id ? { ...p, client_id: parseInt(formData.client_id||'0')||0, client_name: formData.client_name, platform: formData.platform, content: formData.content, media_type: formData.media_type, media_url: formData.media_url || undefined, scheduled_date: formData.scheduled_date || undefined, status: formData.status || p.status, client_comment: formData.client_comment || p.client_comment } : p));
+    setPosts(posts.map(p => p.id === selectedPost.id ? { ...p, client_id: parseInt(formData.client_id || '0') || 0, client_name: formData.client_name, platform: formData.platform, content: formData.content, media_type: formData.media_type, media_url: formData.media_url || undefined, scheduled_date: formData.scheduled_date || undefined, status: formData.status || p.status, client_comment: formData.client_comment || p.client_comment } : p));
     setIsEditOpen(false);
     setSelectedPost(null);
     resetForm();
@@ -150,22 +150,22 @@ export default function SocialMediaApproval() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="relative">
           <Search className="absolute left-3 top-3 text-gray-400 w-4 h-4" />
-          <Input className="pl-10 w-full" placeholder="Search posts..." value={searchTerm} onChange={(e)=>setSearchTerm(e.target.value)} />
+          <Input className="pl-10 w-full" placeholder="Search posts..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
         </div>
 
-        <Select value={filterStatus} onChange={(e)=>setFilterStatus(e.target.value)}>
+        <Select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
           <option>All</option>
           <option>Pending</option>
           <option>Approved</option>
           <option>Rejected</option>
         </Select>
 
-        <Select value={filterPlatform} onChange={(e)=>setFilterPlatform(e.target.value)}>
+        <Select value={filterPlatform} onChange={(e) => setFilterPlatform(e.target.value)}>
           <option>All</option>
           {uniquePlatforms.map(p => <option key={p} value={p}>{p}</option>)}
         </Select>
 
-        <Select value={filterClient} onChange={(e)=>setFilterClient(e.target.value)}>
+        <Select value={filterClient} onChange={(e) => setFilterClient(e.target.value)}>
           <option>All</option>
           {uniqueClients.map(c => <option key={c} value={c}>{c}</option>)}
         </Select>
@@ -202,13 +202,16 @@ export default function SocialMediaApproval() {
         ))}
       </div>
 
-      {/* Modals (simple) */}
+      {/* View Post Dialog */}
       <Dialog open={isViewOpen} onOpenChange={setIsViewOpen}>
-        {selectedPost && (
-          <div className="relative z-10 flex items-start justify-center py-12">
-            <div className="bg-gray-800 text-white rounded p-6 w-full max-w-3xl mx-4 overflow-auto max-h-[80vh]">
-              <h3 className="text-lg font-medium mb-2">Post Details</h3>
-              <div className="space-y-2 mb-4">
+        <DialogContent className="sm:max-w-3xl bg-gray-800 text-white border-gray-700">
+          <DialogHeader>
+            <DialogTitle>Post Details</DialogTitle>
+            <DialogDescription className="text-gray-400">View full details of the social media post</DialogDescription>
+          </DialogHeader>
+          {selectedPost && (
+            <div className="space-y-3">
+              <div className="space-y-2">
                 <p className="font-semibold">{selectedPost.client_name} — <span className="text-sm text-gray-300">{selectedPost.platform}</span></p>
                 <p className="text-sm text-gray-300">Media: {selectedPost.media_type} {selectedPost.media_url ? <a className="underline text-blue-300" href={selectedPost.media_url} target="_blank" rel="noreferrer">view</a> : null}</p>
                 <p className="text-sm text-gray-300">Status: {selectedPost.status}</p>
@@ -216,106 +219,124 @@ export default function SocialMediaApproval() {
                 {selectedPost.scheduled_date ? <p className="text-sm text-gray-300">Scheduled: {selectedPost.scheduled_date}</p> : null}
                 {selectedPost.client_comment ? <p className="text-sm text-gray-300">Comment: {selectedPost.client_comment}</p> : null}
               </div>
-              <p className="mb-4 text-gray-100">{selectedPost.content}</p>
-              <div className="flex justify-end"><Button onClick={()=>setIsViewOpen(false)} className="px-4 py-2 border border-gray-600 text-white">Close</Button></div>
-            </div>
-          </div>
-        )}
-      </Dialog>
-
-      <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
-        <div className="relative z-10 flex items-start justify-center py-12">
-          <div className="bg-gray-800 text-white rounded p-6 w-full max-w-3xl mx-4 overflow-auto max-h-[80vh]">
-            <h3 className="text-lg font-medium mb-4">Create Post</h3>
-            <div className="space-y-3">
-              <Label className="text-gray-200">Client ID</Label>
-              <Input className="w-full bg-gray-900 text-white border-gray-700" value={formData.client_id} onChange={(e)=>setFormData({...formData, client_id:e.target.value})} />
-              <Label className="text-gray-200">Client Name</Label>
-              <Input className="w-full bg-gray-900 text-white border-gray-700" value={formData.client_name} onChange={(e)=>setFormData({...formData, client_name:e.target.value})} />
-              <Label className="text-gray-200">Platform</Label>
-              <Select className="w-full bg-gray-900 text-white border-gray-700" value={formData.platform} onChange={(e)=>setFormData({...formData, platform:e.target.value})}>
-                <option>LinkedIn</option>
-                <option>Instagram</option>
-                <option>Facebook</option>
-                <option>Twitter</option>
-              </Select>
-              <Label className="text-gray-200">Media Type</Label>
-              <Select className="w-full bg-gray-900 text-white border-gray-700" value={formData.media_type} onChange={(e)=>setFormData({...formData, media_type:e.target.value})}>
-                <option>Text</option>
-                <option>Image</option>
-                <option>Video</option>
-              </Select>
-              <Label className="text-gray-200">Media URL</Label>
-              <Input className="w-full bg-gray-900 text-white border-gray-700" value={formData.media_url} onChange={(e)=>setFormData({...formData, media_url:e.target.value})} />
-              <Label className="text-gray-200">Scheduled Date</Label>
-              <Input type="date" className="w-full bg-gray-900 text-white border-gray-700" value={formData.scheduled_date} onChange={(e)=>setFormData({...formData, scheduled_date:e.target.value})} />
-              <Label className="text-gray-200">Content</Label>
-              <Textarea rows={6} className="w-full bg-gray-900 text-white border-gray-700" value={formData.content} onChange={(e)=>setFormData({...formData, content:e.target.value})} />
-            </div>
-            <div className="mt-4 flex justify-end gap-2">
-              <Button onClick={()=>{ resetForm(); setIsAddOpen(false); }} className="px-4 py-2 border border-gray-600 text-white">Cancel</Button>
-              <Button onClick={handleAddPost} className="px-4 py-2 bg-blue-600 text-white">Create</Button>
-            </div>
-          </div>
-        </div>
-      </Dialog>
-
-      <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
-        <div className="relative z-10 flex items-start justify-center py-12">
-          <div className="bg-gray-800 text-white rounded p-6 w-full max-w-3xl mx-4 overflow-auto max-h-[80vh]">
-            <h3 className="text-lg font-medium mb-4">Edit Post</h3>
-            <div className="space-y-3">
-              <Label className="text-gray-200">Client ID</Label>
-              <Input className="w-full bg-gray-900 text-white border-gray-700" value={formData.client_id} onChange={(e)=>setFormData({...formData, client_id:e.target.value})} />
-              <Label className="text-gray-200">Client Name</Label>
-              <Input className="w-full bg-gray-900 text-white border-gray-700" value={formData.client_name} onChange={(e)=>setFormData({...formData, client_name:e.target.value})} />
-              <Label className="text-gray-200">Platform</Label>
-              <Select className="w-full bg-gray-900 text-white border-gray-700" value={formData.platform} onChange={(e)=>setFormData({...formData, platform:e.target.value})}>
-                <option>LinkedIn</option>
-                <option>Instagram</option>
-                <option>Facebook</option>
-                <option>Twitter</option>
-              </Select>
-              <Label className="text-gray-200">Media Type</Label>
-              <Select className="w-full bg-gray-900 text-white border-gray-700" value={formData.media_type} onChange={(e)=>setFormData({...formData, media_type:e.target.value})}>
-                <option>Text</option>
-                <option>Image</option>
-                <option>Video</option>
-              </Select>
-              <Label className="text-gray-200">Media URL</Label>
-              <Input className="w-full bg-gray-900 text-white border-gray-700" value={formData.media_url} onChange={(e)=>setFormData({...formData, media_url:e.target.value})} />
-              <Label className="text-gray-200">Scheduled Date</Label>
-              <Input type="date" className="w-full bg-gray-900 text-white border-gray-700" value={formData.scheduled_date} onChange={(e)=>setFormData({...formData, scheduled_date:e.target.value})} />
-              <Label className="text-gray-200">Status</Label>
-              <Select className="w-full bg-gray-900 text-white border-gray-700" value={formData.status || (selectedPost?.status||'Pending')} onChange={(e)=>setFormData({...formData, status:e.target.value})}>
-                <option>Pending</option>
-                <option>Approved</option>
-                <option>Rejected</option>
-              </Select>
-              <Label className="text-gray-200">Client Comment</Label>
-              <Textarea rows={4} className="w-full bg-gray-900 text-white border-gray-700" value={formData.client_comment || ''} onChange={(e)=>setFormData({...formData, client_comment:e.target.value})} />
-            </div>
-            <div className="mt-4 flex justify-end gap-2">
-              <Button onClick={()=>{ setIsEditOpen(false); setSelectedPost(null); resetForm(); }} className="px-4 py-2 border border-gray-600 text-white">Cancel</Button>
-              <Button onClick={handleEditPost} className="px-4 py-2 bg-green-600 text-white">Save</Button>
-            </div>
-          </div>
-        </div>
-      </Dialog>
-
-      <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
-        {selectedPost && (
-          <div className="relative z-10 flex items-start justify-center py-12">
-            <div className="bg-gray-800 text-white rounded p-6 w-full max-w-md mx-4">
-              <h3 className="text-lg font-medium mb-2">Confirm Delete</h3>
-              <p className="mb-4">Are you sure you want to delete this post?</p>
-              <div className="flex justify-end gap-2">
-                <Button onClick={()=>{ setIsDeleteOpen(false); setSelectedPost(null); }} className="px-4 py-2 border border-gray-600 text-white">Cancel</Button>
-                <Button onClick={handleDeletePost} className="px-4 py-2 bg-red-600 text-white">Delete</Button>
+              <div className="border border-gray-700 rounded p-3 bg-gray-900">
+                <p className="text-gray-100">{selectedPost.content}</p>
               </div>
             </div>
+          )}
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button className="px-4 py-2 border border-gray-600 text-white bg-transparent hover:bg-gray-700">Close</Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Create Post Dialog */}
+      <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
+        <DialogContent className="sm:max-w-3xl bg-gray-800 text-white border-gray-700 max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Create Post</DialogTitle>
+            <DialogDescription className="text-gray-400">Fill in the details to create a new social media post</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <Label className="text-gray-200">Client ID</Label>
+            <Input className="w-full bg-gray-900 text-white border-gray-700" value={formData.client_id} onChange={(e) => setFormData({ ...formData, client_id: e.target.value })} />
+            <Label className="text-gray-200">Client Name</Label>
+            <Input className="w-full bg-gray-900 text-white border-gray-700" value={formData.client_name} onChange={(e) => setFormData({ ...formData, client_name: e.target.value })} />
+            <Label className="text-gray-200">Platform</Label>
+            <Select className="w-full bg-gray-900 text-white border-gray-700" value={formData.platform} onChange={(e) => setFormData({ ...formData, platform: e.target.value })}>
+              <option>LinkedIn</option>
+              <option>Instagram</option>
+              <option>Facebook</option>
+              <option>Twitter</option>
+            </Select>
+            <Label className="text-gray-200">Media Type</Label>
+            <Select className="w-full bg-gray-900 text-white border-gray-700" value={formData.media_type} onChange={(e) => setFormData({ ...formData, media_type: e.target.value })}>
+              <option>Text</option>
+              <option>Image</option>
+              <option>Video</option>
+            </Select>
+            <Label className="text-gray-200">Media URL</Label>
+            <Input className="w-full bg-gray-900 text-white border-gray-700" value={formData.media_url} onChange={(e) => setFormData({ ...formData, media_url: e.target.value })} />
+            <Label className="text-gray-200">Scheduled Date</Label>
+            <Input type="date" className="w-full bg-gray-900 text-white border-gray-700" value={formData.scheduled_date} onChange={(e) => setFormData({ ...formData, scheduled_date: e.target.value })} />
+            <Label className="text-gray-200">Content</Label>
+            <Textarea rows={6} className="w-full bg-gray-900 text-white border-gray-700" value={formData.content} onChange={(e) => setFormData({ ...formData, content: e.target.value })} />
           </div>
-        )}
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button className="px-4 py-2 border border-gray-600 text-white bg-transparent hover:bg-gray-700">Cancel</Button>
+            </DialogClose>
+            <Button onClick={handleAddPost} className="px-4 py-2 bg-blue-600 text-white">Create</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Post Dialog */}
+      <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+        <DialogContent className="sm:max-w-3xl bg-gray-800 text-white border-gray-700 max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Edit Post</DialogTitle>
+            <DialogDescription className="text-gray-400">Modify the post details below</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <Label className="text-gray-200">Client ID</Label>
+            <Input className="w-full bg-gray-900 text-white border-gray-700" value={formData.client_id} onChange={(e) => setFormData({ ...formData, client_id: e.target.value })} />
+            <Label className="text-gray-200">Client Name</Label>
+            <Input className="w-full bg-gray-900 text-white border-gray-700" value={formData.client_name} onChange={(e) => setFormData({ ...formData, client_name: e.target.value })} />
+            <Label className="text-gray-200">Platform</Label>
+            <Select className="w-full bg-gray-900 text-white border-gray-700" value={formData.platform} onChange={(e) => setFormData({ ...formData, platform: e.target.value })}>
+              <option>LinkedIn</option>
+              <option>Instagram</option>
+              <option>Facebook</option>
+              <option>Twitter</option>
+            </Select>
+            <Label className="text-gray-200">Media Type</Label>
+            <Select className="w-full bg-gray-900 text-white border-gray-700" value={formData.media_type} onChange={(e) => setFormData({ ...formData, media_type: e.target.value })}>
+              <option>Text</option>
+              <option>Image</option>
+              <option>Video</option>
+            </Select>
+            <Label className="text-gray-200">Media URL</Label>
+            <Input className="w-full bg-gray-900 text-white border-gray-700" value={formData.media_url} onChange={(e) => setFormData({ ...formData, media_url: e.target.value })} />
+            <Label className="text-gray-200">Scheduled Date</Label>
+            <Input type="date" className="w-full bg-gray-900 text-white border-gray-700" value={formData.scheduled_date} onChange={(e) => setFormData({ ...formData, scheduled_date: e.target.value })} />
+            <Label className="text-gray-200">Status</Label>
+            <Select className="w-full bg-gray-900 text-white border-gray-700" value={formData.status || (selectedPost?.status || 'Pending')} onChange={(e) => setFormData({ ...formData, status: e.target.value })}>
+              <option>Pending</option>
+              <option>Approved</option>
+              <option>Rejected</option>
+            </Select>
+            <Label className="text-gray-200">Client Comment</Label>
+            <Textarea rows={4} className="w-full bg-gray-900 text-white border-gray-700" value={formData.client_comment || ''} onChange={(e) => setFormData({ ...formData, client_comment: e.target.value })} />
+          </div>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button onClick={() => { setSelectedPost(null); resetForm(); }} className="px-4 py-2 border border-gray-600 text-white bg-transparent hover:bg-gray-700">Cancel</Button>
+            </DialogClose>
+            <Button onClick={handleEditPost} className="px-4 py-2 bg-green-600 text-white">Save</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
+        <DialogContent className="sm:max-w-md bg-gray-800 text-white border-gray-700">
+          <DialogHeader>
+            <DialogTitle>Confirm Delete</DialogTitle>
+            <DialogDescription className="text-gray-400">This action cannot be undone.</DialogDescription>
+          </DialogHeader>
+          {selectedPost && (
+            <p className="text-gray-100">Are you sure you want to delete this post by <strong>{selectedPost.client_name}</strong> on <strong>{selectedPost.platform}</strong>?</p>
+          )}
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button onClick={() => setSelectedPost(null)} className="px-4 py-2 border border-gray-600 text-white bg-transparent hover:bg-gray-700">Cancel</Button>
+            </DialogClose>
+            <Button onClick={handleDeletePost} className="px-4 py-2 bg-red-600 text-white hover:bg-red-700">Delete</Button>
+          </DialogFooter>
+        </DialogContent>
       </Dialog>
     </div>
   );
