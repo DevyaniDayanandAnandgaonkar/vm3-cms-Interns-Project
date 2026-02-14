@@ -1,5 +1,6 @@
 "use client";
 import { User, Mail, Phone, Building, Lock, Bell, Shield } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { useState, useMemo } from 'react';
 import { toast } from 'sonner';
 
@@ -84,19 +85,19 @@ export default function ClientSettings(props) {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-gray-900 mb-2">Settings</h1>
+        <h1 className="text-gray-200 mb-2">Settings</h1>
         <p className="text-gray-600">Manage your account settings and preferences</p>
       </div>
 
       {/* Profile Settings */}
-      <div className="p-6 bg-white rounded-md shadow">
+      <div className="p-6 bg-gray-800 rounded-md shadow">
         <div className="flex items-center gap-3 mb-6">
           <div className="p-3 bg-blue-50 rounded-lg">
             <User className="w-6 h-6 text-blue-600" />
           </div>
           <div>
-            <h2 className="text-gray-900">Profile Information</h2>
-            <p className="text-gray-600">Update your company and contact details</p>
+            <h2 className="text-gray-200">Profile Information</h2>
+            <p className="text-gray-400">Update your company and contact details</p>
           </div>
         </div>
 
@@ -178,22 +179,20 @@ export default function ClientSettings(props) {
           </div>
 
           <div className="flex justify-end">
-            <button onClick={handleProfileUpdate} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">
-              Save Profile Changes
-            </button>
+            <Button onClick={handleProfileUpdate} variant="default">Save Profile Changes</Button>
           </div>
         </div>
       </div>
 
       {/* Security Settings */}
-      <div className="p-6 bg-white rounded-md shadow">
+      <div className="p-6 bg-gray-800 rounded-md shadow">
         <div className="flex items-center gap-3 mb-6">
           <div className="p-3 bg-red-50 rounded-lg">
             <Lock className="w-6 h-6 text-red-600" />
           </div>
           <div>
-            <h2 className="text-gray-900">Security</h2>
-            <p className="text-gray-600">Change your password and security settings</p>
+            <h2 className="text-gray-200">Security</h2>
+            <p className="text-gray-400">Change your password and security settings</p>
           </div>
         </div>
 
@@ -218,7 +217,7 @@ export default function ClientSettings(props) {
               onChange={(e) => setPasswordData({ ...passwordData, new_password: e.target.value })}
               placeholder="Enter new password"
             />
-            <p className="text-gray-600">Password must be at least 8 characters long</p>
+            <p className="text-gray-400">Password must be at least 8 characters long</p>
           </div>
 
           <div className="space-y-2">
@@ -233,30 +232,28 @@ export default function ClientSettings(props) {
           </div>
 
           <div className="flex justify-end">
-            <button onClick={handlePasswordChange} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">
-              Change Password
-            </button>
+            <Button onClick={handlePasswordChange} variant="default">Change Password</Button>
           </div>
         </div>
       </div>
 
       {/* Notification Settings */}
-      <div className="p-6 bg-white rounded-md shadow">
+      <div className="p-6 bg-gray-800 rounded-md shadow">
         <div className="flex items-center gap-3 mb-6">
           <div className="p-3 bg-purple-50 rounded-lg">
             <Bell className="w-6 h-6 text-purple-600" />
           </div>
           <div>
-            <h2 className="text-gray-900">Notifications</h2>
-            <p className="text-gray-600">Manage your notification preferences</p>
+            <h2 className="text-gray-200">Notifications</h2>
+            <p className="text-gray-400">Manage your notification preferences</p>
           </div>
         </div>
 
         <div className="space-y-4">
           <div className="flex items-center justify-between py-3 border-b">
             <div>
-              <p className="text-gray-900">Email Notifications</p>
-              <p className="text-gray-600">Receive notifications via email</p>
+              <p className="text-gray-200">Email Notifications</p>
+              <p className="text-gray-400">Receive notifications via email</p>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
               <input
@@ -271,8 +268,8 @@ export default function ClientSettings(props) {
 
           <div className="flex items-center justify-between py-3 border-b">
             <div>
-              <p className="text-gray-900">Project Updates</p>
-              <p className="text-gray-600">Get notified about project progress updates</p>
+              <p className="text-gray-200">Project Updates</p>
+              <p className="text-gray-400">Get notified about project progress updates</p>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
               <input
@@ -287,8 +284,8 @@ export default function ClientSettings(props) {
 
           <div className="flex items-center justify-between py-3 border-b">
             <div>
-              <p className="text-gray-900">Status Changes</p>
-              <p className="text-gray-600">Alerts when project status changes</p>
+              <p className="text-gray-200">Status Changes</p>
+              <p className="text-gray-400">Alerts when project status changes</p>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
               <input
@@ -303,8 +300,8 @@ export default function ClientSettings(props) {
 
           <div className="flex items-center justify-between py-3 border-b">
             <div>
-              <p className="text-gray-900">Budget Alerts</p>
-              <p className="text-gray-600">Notifications when budget thresholds are reached</p>
+              <p className="text-gray-200">Budget Alerts</p>
+              <p className="text-gray-400">Notifications when budget thresholds are reached</p>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
               <input
@@ -319,8 +316,8 @@ export default function ClientSettings(props) {
 
           <div className="flex items-center justify-between py-3">
             <div>
-              <p className="text-gray-900">Weekly Reports</p>
-              <p className="text-gray-600">Receive weekly project summary reports</p>
+              <p className="text-gray-200">Weekly Reports</p>
+              <p className="text-gray-400">Receive weekly project summary reports</p>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
               <input
@@ -334,41 +331,39 @@ export default function ClientSettings(props) {
           </div>
 
           <div className="flex justify-end pt-4">
-            <button onClick={handleNotificationUpdate} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">
-              Save Notification Settings
-            </button>
+            <Button onClick={handleNotificationUpdate} variant="default">Save Notification Settings</Button>
           </div>
         </div>
       </div>
 
       {/* Account Information */}
-      <div className="p-6 bg-white rounded-md shadow">
+      <div className="p-6 bg-gray-800 rounded-md shadow">
         <div className="flex items-center gap-3 mb-6">
           <div className="p-3 bg-gray-100 rounded-lg">
             <Shield className="w-6 h-6 text-gray-600" />
           </div>
           <div>
-            <h2 className="text-gray-900">Account Information</h2>
-            <p className="text-gray-600">View your account details</p>
+            <h2 className="text-gray-200">Account Information</h2>
+            <p className="text-gray-400">View your account details</p>
           </div>
         </div>
 
         <div className="grid gap-4">
           <div className="flex justify-between py-3 border-b">
-            <span className="text-gray-600">Account ID</span>
-            <span className="text-gray-900">CLIENT-001</span>
+            <span className="text-gray-400">Account ID</span>
+            <span className="text-gray-200">CLIENT-001</span>
           </div>
           <div className="flex justify-between py-3 border-b">
-            <span className="text-gray-600">Account Type</span>
-            <span className="text-gray-900">Premium Client</span>
+            <span className="text-gray-400">Account Type</span>
+            <span className="text-gray-200">Premium Client</span>
           </div>
           <div className="flex justify-between py-3 border-b">
-            <span className="text-gray-600">Member Since</span>
-            <span className="text-gray-900">January 2024</span>
+            <span className="text-gray-400">Member Since</span>
+            <span className="text-gray-200">January 2024</span>
           </div>
           <div className="flex justify-between py-3">
-            <span className="text-gray-600">Active Projects</span>
-            <span className="text-gray-900">5 Projects</span>
+            <span className="text-gray-400">Active Projects</span>
+            <span className="text-gray-200">5 Projects</span>
           </div>
         </div>
       </div>

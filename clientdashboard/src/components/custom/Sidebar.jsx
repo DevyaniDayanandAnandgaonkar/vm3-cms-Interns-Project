@@ -205,16 +205,9 @@ export function Sidebar() {
         <Link
           href={item.link}
           key={index}
-          className={`flex items-center gap-3 px-4 py-3 rounded-lg
-                       text-muted-foreground
-                       hover:bg-gray-200 hover:text-black
-                       cursor-pointer transition mt-4
-                          ${
-                            pathname === item.link
-                              ? "bg-red-600 text-white"
-                              : ""
-                          }
-                       `}
+          className={`flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white cursor-pointer transition mt-4 ${
+            pathname === item.link ? "bg-red-600 text-white" : ""
+          }`}
         >
           <div className="w-5 h-5 flex items-center justify-center">
             {item.svg}

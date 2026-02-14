@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/card";
 
 import { Progress } from "@/components/ui/progress";
+import { Button } from '@/components/ui/button';
 
 export default function Home() {
   const cardData = [
@@ -195,7 +196,7 @@ export default function Home() {
 
       {/* project by type */}
 
-      <div className="h-fit w-full border rounded-xl mt-10 p-5 bg-white">
+      <div className="h-fit w-full border rounded-xl mt-10 p-5 bg-gray-800">
         <div className="flex gap-2">
           <div>
             <svg
@@ -218,17 +219,17 @@ export default function Home() {
             </svg>
           </div>
 
-          <p className=" text-gray-600 mb-2">Project By Type</p>
+          <p className=" text-white mb-2">Project By Type</p>
         </div>
 
         <div className="flex gap-5 mt-10 ">
           <div className="flex gap-45 border p-5 rounded-xl">
             <p>Development</p>
-            <p className="bg-gray-200 rounded-2xl  p-1">2 Projects</p>
+            <p className="bg-gray-700 rounded-2xl  p-1">2 Projects</p>
           </div>
           <div className="flex gap-45 border p-5 rounded-xl">
             <p>Degital Marketing</p>
-            <p className="bg-gray-200 rounded-2xl  p-1">1 Project</p>
+            <p className="bg-gray-700 rounded-2xl  p-1">1 Project</p>
           </div>
         </div>
       </div>
@@ -295,12 +296,8 @@ function ReportCard({ svg, title, text }) {
         <p>{text}</p>
       </CardContent>
       <CardFooter className="flex gap-2">
-        <button className="bg-black text-white p-2 border rounded-xl">
-          Download Report
-        </button>
-        <button className="border hover:bg-gray-100 p-2 rounded-xl">
-          View Details
-        </button>
+        <Button>Download Report</Button>
+        <Button variant="outline">View Details</Button>
       </CardFooter>
     </Card>
   );

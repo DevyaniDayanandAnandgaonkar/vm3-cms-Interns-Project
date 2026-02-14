@@ -1,4 +1,5 @@
 import { Card } from "../ui/card";
+import { Button } from "@/components/ui/button";
 
 export default function ClientBrandingAssets() {
   const colordata = [
@@ -48,9 +49,9 @@ export default function ClientBrandingAssets() {
 function CompanyLogo() {
   return (
     <Card className={"mt-5 p-4"}>
-      <div>
-        <p className="font-semibold">Company Logo</p>
-      </div>
+        <div>
+          <p className="font-semibold">Company Logo</p>
+        </div>
 
       <div className="flex items-center gap-4">
         <div className="p-5 border rounded-2xl w-fit">
@@ -114,19 +115,17 @@ function BrandColors({ colorData }) {
     <Card className={"mt-5 p-4"}>
       <div className="flex items-center justify-between">
         <p className="font-semibold">Brand Colors Palette</p>
-        <button className="text-sm text-blue-600 p-1 border rounded-xl">
-          Add New Color
-        </button>
+        <Button variant="outline" className="text-sm p-1">Add New Color</Button>
       </div>
 
-      <div className="flex gap-5">
+      <div className="flex gap-5 mt-4">
         {colorData.map((colorItem, index) => (
-          <div key={index}>
+          <div key={index} className="flex flex-col items-center gap-2">
             <div
-              className={`h-15 w-15 rounded-2xl `}
-              style={{ backgroundColor: `${colorItem.color}` }}
-            ></div>
-            <div>{colorItem.color}</div>
+              className={`h-12 w-12 rounded-2xl`}
+              style={{ backgroundColor: colorItem.color }}
+            />
+            <div className="text-sm">{colorItem.color}</div>
           </div>
         ))}
       </div>
