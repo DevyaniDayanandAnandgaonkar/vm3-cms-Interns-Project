@@ -1,27 +1,31 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "@/store/slices/authSlice";
 import { Bell, LogOut, User } from "lucide-react";
 import { Button } from '@/components/ui/button';
 
 export default function Header() {
   const router = useRouter();
+  const dispatch = useDispatch();
+  const { client } = useSelector((state) => state.auth);
 
   const handleLogout = () => {
-    try {
-      localStorage.removeItem("client_token");
-    } catch (err) {
-      // ignore
-    }
-    router.push("/login");
+    // Clear Redux state + localStorage together
+    dispatch(logout());
+    router.replace("/login");
   };
+
+  // Display client name if available
+  const displayName = client?.client_name || "Client";
 
   return (
     <header className="w-full bg-gray-900 shadow-sm">
       <div className="flex items-center justify-between px-6 py-4">
         {/* Left Section */}
         <h1 className="text-lg font-medium text-gray-100">
-          Hello, <span className="font-semibold">Robert Fox</span>
+          Hello, <span className="font-semibold">{displayName}</span>
         </h1>
 
         {/* Right Section */}
