@@ -1,7 +1,7 @@
 // store/slices/authSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-const API_BASE = "http://localhost:5000/api/client-auth";
+const API_BASE = "http://localhost:5000/client";
 
 // ─── Async Thunks ───────────────────────────────────────────
 

@@ -89,7 +89,7 @@ const menuItems = [
   { icon: UserCircle, label: "Clients", path: "/admin/clients" },
   { icon: Handshake, label: "Partners", path: "/admin/partners" },
   { icon: FolderKanban, label: "Projects", path: "/admin/projects" },
-  { icon: History, label: "Project History", path: "/admin/project-history" },
+  //{ icon: History, label: "Project History", path: "/admin/project-history" },
   { icon: UserCog, label: "Roles", path: "/admin/roles" },
   { icon: Briefcase, label: "Designation", path: "/admin/designation" },
   { icon: FileText, label: "Reports", path: "/admin/reports" },

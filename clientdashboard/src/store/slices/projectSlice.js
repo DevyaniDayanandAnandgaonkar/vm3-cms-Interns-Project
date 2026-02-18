@@ -1,7 +1,7 @@
 // store/slices/projectSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-const API_BASE = "http://localhost:5000/api/projects";
+const API_BASE = "http://localhost:5000/client/projects";
 
 // ─── Helper: get token from localStorage ────────────────────
 const getToken = () => {
