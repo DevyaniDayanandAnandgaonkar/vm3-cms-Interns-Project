@@ -91,3 +91,119 @@ exports.getProfile = async (req, res) => {
         return res.status(500).json({ success: false, message: "Internal server error" });
     }
 };
+
+/**
+ * GET /client/client-profile
+ * Protected — returns merged data from clients + client_profile tables
+ */
+exports.getClientProfileData = async (req, res) => {
+    try {
+        const clientId = req.client.client_id;
+
+        const [rows] = await db.query(
+            `SELECT c.client_id, c.client_name, c.email, c.phone, c.address, c.status,
+                    c.document_type, c.document_file, c.contact_person_name,
+                    c.website_url, c.domain_provider, c.website_username, c.website_password,
+                    c.website_email, c.otp_enabled, c.logo_url, c.brand_colors, c.kyc_verified,
+                    cp.company_name, cp.contact_person, cp.contact_no, cp.projects_count
+             FROM clients c
+             LEFT JOIN client_profile cp ON c.client_id = cp.client_id
+             WHERE c.client_id = ?`,
+            [clientId]
+        );
+
+        if (rows.length === 0) {
+            return res.status(404).json({ success: false, message: "Client not found" });
+        }
+
+        // Exclude password from response
+        const { password, ...profileData } = rows[0];
+
+        return res.status(200).json({ success: true, profileData });
+    } catch (error) {
+        console.error("Get client profile data error:", error);
+        return res.status(500).json({ success: false, message: "Internal server error" });
+    }
+};
+
+/**
+ * PUT /client/update-basic-info
+ * Protected — updates basic info in both clients and client_profile tables
+ */
+exports.updateClientBasicInfo = async (req, res) => {
+    try {
+        const clientId = req.client.client_id;
+        const { company_name, contact_person, email, phone, address } = req.body;
+
+        // Update clients table
+        await db.query(
+            `UPDATE clients SET client_name = ?, email = ?, phone = ?, address = ?, contact_person_name = ? WHERE client_id = ?`,
+            [company_name || null, email || null, phone || null, address || null, contact_person || null, clientId]
+        );
+
+        // Upsert client_profile table
+        const [existing] = await db.query(
+            `SELECT client_profile_id FROM client_profile WHERE client_id = ?`,
+            [clientId]
+        );
+
+        if (existing.length > 0) {
+            await db.query(
+                `UPDATE client_profile SET company_name = ?, contact_person = ?, contact_no = ?, email = ?, address = ? WHERE client_id = ?`,
+                [company_name || null, contact_person || null, phone || null, email || null, address || null, clientId]
+            );
+        } else {
+            await db.query(
+                `INSERT INTO client_profile (client_id, company_name, contact_person, contact_no, email, address) VALUES (?, ?, ?, ?, ?, ?)`,
+                [clientId, company_name || null, contact_person || null, phone || null, email || null, address || null]
+            );
+        }
+
+        return res.status(200).json({ success: true, message: "Basic info updated successfully" });
+    } catch (error) {
+        console.error("Update basic info error:", error);
+        return res.status(500).json({ success: false, message: "Internal server error" });
+    }
+};
+
+/**
+ * PUT /client/update-website-info
+ * Protected — updates website-related fields in clients table
+ */
+exports.updateClientWebsiteInfo = async (req, res) => {
+    try {
+        const clientId = req.client.client_id;
+        const { website_url, domain_provider, website_username, website_password, website_email, otp_enabled } = req.body;
+
+        await db.query(
+            `UPDATE clients SET website_url = ?, domain_provider = ?, website_username = ?, website_password = ?, website_email = ?, otp_enabled = ? WHERE client_id = ?`,
+            [website_url || null, domain_provider || null, website_username || null, website_password || null, website_email || null, otp_enabled ?? null, clientId]
+        );
+
+        return res.status(200).json({ success: true, message: "Website info updated successfully" });
+    } catch (error) {
+        console.error("Update website info error:", error);
+        return res.status(500).json({ success: false, message: "Internal server error" });
+    }
+};
+
+/**
+ * PUT /client/update-branding
+ * Protected — updates logo_url and brand_colors in clients table
+ */
+exports.updateClientBranding = async (req, res) => {
+    try {
+        const clientId = req.client.client_id;
+        const { logo_url, brand_colors } = req.body;
+
+        await db.query(
+            `UPDATE clients SET logo_url = ?, brand_colors = ? WHERE client_id = ?`,
+            [logo_url || null, brand_colors ? JSON.stringify(brand_colors) : null, clientId]
+        );
+
+        return res.status(200).json({ success: true, message: "Branding updated successfully" });
+    } catch (error) {
+        console.error("Update branding error:", error);
+        return res.status(500).json({ success: false, message: "Internal server error" });
+    }
+};

@@ -38,4 +38,16 @@ clientRouter.get("/projects", verifyClientToken, projectController.getClientProj
 // GET /api/projects/:id    — get single project by id, scoped to client (protected)
 clientRouter.get("/projects/:id", verifyClientToken, projectController.getProjectById);
 
+// GET /client/client-profile — get merged client + client_profile data (protected)
+clientRouter.get("/client-profile", verifyClientToken, clientAuthController.getClientProfileData);
+
+// PUT /client/update-basic-info — update basic info (protected)
+clientRouter.put("/update-basic-info", verifyClientToken, clientAuthController.updateClientBasicInfo);
+
+// PUT /client/update-website-info — update website info (protected)
+clientRouter.put("/update-website-info", verifyClientToken, clientAuthController.updateClientWebsiteInfo);
+
+// PUT /client/update-branding — update branding assets (protected)
+clientRouter.put("/update-branding", verifyClientToken, clientAuthController.updateClientBranding);
+
 module.exports = clientRouter;

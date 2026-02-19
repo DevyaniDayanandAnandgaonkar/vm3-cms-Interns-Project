@@ -1,7 +1,7 @@
-import { Card, CardHeader } from "../ui/card";
+import { Card } from "../ui/card";
 import UpdateClientDataForm from "./UpdateClientDataForm";
 
-export default function ClientInfo() {
+export default function ClientInfo({ data }) {
   return (
     <Card className="p-5 mt-5">
       <div className="flex items-center justify-between">
@@ -35,29 +35,29 @@ export default function ClientInfo() {
       <div className="flex gap-100 mt-4 mb-4">
         <div className="flex flex-col ">
           <p className="font-semibold">Company Name</p>
-          <p>Tech Corp Inc.</p>
+          <p>{data?.company_name || data?.client_name || "—"}</p>
         </div>
         <div className="flex flex-col">
           <p className="font-semibold">Contact Person</p>
-          <p>John Doe</p>
+          <p>{data?.contact_person || data?.contact_person_name || "—"}</p>
         </div>
       </div>
 
       <div className="flex gap-90 ">
         <div className="flex flex-col ">
           <p className="font-semibold">Email Address</p>
-          <p>Contact@example.com</p>
+          <p>{data?.email || "—"}</p>
         </div>
         <div className="flex flex-col ">
           <p className="font-semibold">Phone Number</p>
-          <p>+1 234 567 8901</p>
+          <p>{data?.contact_no || data?.phone || "—"}</p>
         </div>
       </div>
 
       <div>
         <div className="flex flex-col mb-5 ">
           <p className="font-semibold">Address</p>
-          <p>1234 Tech Street, Silicon Valley, CA</p>
+          <p>{data?.address || "—"}</p>
         </div>
       </div>
     </Card>

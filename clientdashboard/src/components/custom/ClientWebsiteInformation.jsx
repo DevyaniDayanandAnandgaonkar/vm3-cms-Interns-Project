@@ -1,7 +1,7 @@
 import { Card } from "../ui/card";
 import UpdateWebsiteInformation from "./UpdateWebsiteInformation";
 
-export default function ClientWebsiteInformation() {
+export default function ClientWebsiteInformation({ data }) {
   return (
     <Card className={"mt-5 p-4"}>
       <div className="flex items-center justify-between">
@@ -33,33 +33,33 @@ export default function ClientWebsiteInformation() {
       <div className="flex gap-100 mt-4 mb-4">
         <div className="flex flex-col ">
           <p className="font-semibold">Website URL</p>
-          <p>https://example.com</p>
+          <p>{data?.website_url || "—"}</p>
         </div>
         <div className="flex flex-col">
           <p className="font-semibold">Domain Provider</p>
-          <p>Go Daddy</p>
+          <p>{data?.domain_provider || "—"}</p>
         </div>
       </div>
 
       <div className="flex gap-115 ">
         <div className="flex flex-col ">
           <p className="font-semibold">User Id</p>
-          <p>client_admin</p>
+          <p>{data?.website_username || "—"}</p>
         </div>
         <div className="flex flex-col ">
           <p className="font-semibold">Password</p>
-          <p>client123</p>
+          <p>{data?.website_password || "••••••••"}</p>
         </div>
       </div>
 
       <div className="flex gap-100 ">
         <div className="flex flex-col ">
           <p className="font-semibold">Email Address</p>
-          <p>admin@example.com</p>
+          <p>{data?.website_email || "—"}</p>
         </div>
         <div className="flex flex-col ">
           <p className="font-semibold">OTP Enabled</p>
-          <p>enabled</p>
+          <p>{data?.otp_enabled ? "Enabled" : "Disabled"}</p>
         </div>
       </div>
     </Card>
