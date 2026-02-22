@@ -1,4 +1,5 @@
 const db = require("../../config/db");
+const bcrypt = require("bcrypt");
 
 exports.getProjectCount = async (req, res) => {
   const id = req.params.id;
@@ -94,6 +95,69 @@ exports.SendProjectRequest = async (req, res) => {
     return res
       .status(200)
       .json({ message: "Project request sent successfully" });
+  } catch (error) {
+    return res.json(error);
+  }
+};
+
+exports.createProfile = async (req, res) => {
+  let { platform, account_type, username, password } = req.body;
+  password = await bcrypt.hash(password, 10);
+  const client_id = req.params.id;
+  try {
+    const [data] = await db.query(
+      "insert into media_platform (platform, client_id,account_type, username, password) values (?, ?, ?, ?, ?)",
+      [platform, client_id, account_type, username, password]
+    );
+    return res.status(200).json({ message: "Profile created successfully" });
+  } catch (error) {
+    return res.json(error);
+  }
+};
+
+exports.createSocialMediaPost = async (req, res) => {
+  const id = req.params.id;
+  const { platform, media_type, media_url, content, schedule_date } = req.body;
+  try {
+    const [data] = await db.query(
+      "insert into social_media_posts (platform,client_id, media_type, media_url,   content, schedule_date) values (?, ?, ?, ?, ?, ?)",
+      [platform, id, media_type, media_url, content, schedule_date]
+    );
+    return res
+      .status(200)
+      .json({ message: "Social media post created successfully" });
+  } catch (error) {
+    return res.json(error);
+  }
+};
+
+exports.updateSocialMediaPostApprovalStatus = async (req, res) => {
+  const postId = req.params.postId;
+
+  try {
+    const [data] = await db.query(
+      "update social_media_posts set status=? where post_id=?",
+      ["approved", postId]
+    );
+    return res.status(200).json({
+      message: "Social media post approval status updated successfully",
+    });
+  } catch (error) {
+    return res.json(error);
+  }
+};
+
+exports.rejectSocialMediaPost = async (req, res) => {
+  const postId = req.params.postId;
+  const { rejected_reason } = req.body;
+  try {
+    const [data] = await db.query(
+      "update social_media_posts set status=?, rejected_reason=? where post_id=?",
+      ["rejected", rejected_reason, postId]
+    );
+    return res.status(200).json({
+      message: "Social media post rejection status updated successfully",
+    });
   } catch (error) {
     return res.json(error);
   }
