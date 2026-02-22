@@ -36,10 +36,8 @@ clientRouter.put(
   updateSocialMediaPostApprovalStatus
 );
 
-<<<<<<< HEAD
 // clientRouter.put("/updateSocialMediaPostApprovalStatus/:postId", updateSocialMediaPostApprovalStatus);
 clientRouter.put("/rejectSocialMediaPost/:postId", rejectSocialMediaPost);
-=======
 // POST /api/client-auth/login   — public
 clientRouter.post("/login", clientAuthController.login);
 
@@ -64,6 +62,9 @@ clientRouter.put("/update-website-info", verifyClientToken, clientAuthController
 // PUT /client/update-branding — update branding assets (protected)
 clientRouter.put("/update-branding", verifyClientToken, clientAuthController.updateClientBranding);
 
+// PUT /client/change-password — change password (protected)
+clientRouter.put("/change-password", verifyClientToken, clientAuthController.changePassword);
+
 // Social Media Posts routes
 const socialMediaPostsController = require("../controllers/CLIENT/socialMediaPostsController");
 clientRouter.get("/social-media-posts", verifyClientToken, socialMediaPostsController.getClientPosts);
@@ -74,5 +75,11 @@ clientRouter.put("/social-media-posts/:postId/reject", verifyClientToken, social
 const dashboardController = require("../controllers/CLIENT/dashboardController");
 clientRouter.get("/dashboard-summary", verifyClientToken, dashboardController.getDashboardSummary);
 
->>>>>>> d5a758643b2c9e058da1e5e5490752354af6b8a0
+// Media Platform routes
+const mediaPlatformController = require("../controllers/CLIENT/mediaPlatformController");
+clientRouter.get("/media-platforms", verifyClientToken, mediaPlatformController.getMediaPlatforms);
+clientRouter.post("/media-platforms", verifyClientToken, mediaPlatformController.addMediaPlatform);
+clientRouter.put("/media-platforms/:id", verifyClientToken, mediaPlatformController.updateMediaPlatform);
+clientRouter.delete("/media-platforms/:id", verifyClientToken, mediaPlatformController.deleteMediaPlatform);
+
 module.exports = clientRouter;

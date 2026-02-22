@@ -145,6 +145,39 @@ export const updateClientBranding = createAsyncThunk(
     }
 );
 
+/**
+ * Change client password
+ * PUT /client/change-password
+ */
+export const changeClientPassword = createAsyncThunk(
+    "clientProfile/changeClientPassword",
+    async ({ current_password, new_password }, { rejectWithValue }) => {
+        try {
+            const token = getToken();
+            if (!token) return rejectWithValue("Not authenticated");
+
+            const res = await fetch(`${API_BASE}/change-password`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ current_password, new_password }),
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                return rejectWithValue(data.message || "Failed to change password");
+            }
+
+            return data;
+        } catch (error) {
+            return rejectWithValue("Network error. Please try again.");
+        }
+    }
+);
+
 // ─── Initial State ──────────────────────────────────────────
 const initialState = {
     profileData: null,
@@ -226,6 +259,20 @@ const clientProfileSlice = createSlice({
                 state.updateSuccess = action.payload.message;
             })
             .addCase(updateClientBranding.rejected, (state, action) => {
+                state.updating = false;
+                state.updateError = action.payload;
+            })
+            // ── Change Password ──────────────────────────────────
+            .addCase(changeClientPassword.pending, (state) => {
+                state.updating = true;
+                state.updateError = null;
+                state.updateSuccess = null;
+            })
+            .addCase(changeClientPassword.fulfilled, (state, action) => {
+                state.updating = false;
+                state.updateSuccess = action.payload.message;
+            })
+            .addCase(changeClientPassword.rejected, (state, action) => {
                 state.updating = false;
                 state.updateError = action.payload;
             });

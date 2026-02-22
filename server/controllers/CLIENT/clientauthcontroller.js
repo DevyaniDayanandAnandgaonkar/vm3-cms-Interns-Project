@@ -207,3 +207,50 @@ exports.updateClientBranding = async (req, res) => {
         return res.status(500).json({ success: false, message: "Internal server error" });
     }
 };
+
+/**
+ * PUT /client/change-password
+ * Protected — changes the client's password after verifying the current one
+ */
+exports.changePassword = async (req, res) => {
+    try {
+        const clientId = req.client.client_id;
+        const { current_password, new_password } = req.body;
+
+        if (!current_password || !new_password) {
+            return res.status(400).json({ success: false, message: "Current and new password are required" });
+        }
+
+        if (new_password.length < 8) {
+            return res.status(400).json({ success: false, message: "New password must be at least 8 characters" });
+        }
+
+        // Get current hashed password
+        const [rows] = await db.query(
+            `SELECT password FROM clients WHERE client_id = ?`,
+            [clientId]
+        );
+
+        if (rows.length === 0) {
+            return res.status(404).json({ success: false, message: "Client not found" });
+        }
+
+        // Verify current password
+        const isMatch = await bcrypt.compare(current_password, rows[0].password);
+        if (!isMatch) {
+            return res.status(401).json({ success: false, message: "Current password is incorrect" });
+        }
+
+        // Hash and save new password
+        const hashedPassword = await bcrypt.hash(new_password, 10);
+        await db.query(
+            `UPDATE clients SET password = ? WHERE client_id = ?`,
+            [hashedPassword, clientId]
+        );
+
+        return res.status(200).json({ success: true, message: "Password changed successfully" });
+    } catch (error) {
+        console.error("Change password error:", error);
+        return res.status(500).json({ success: false, message: "Internal server error" });
+    }
+};

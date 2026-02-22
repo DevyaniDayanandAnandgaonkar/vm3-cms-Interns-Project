@@ -62,7 +62,7 @@ export default function ClientPostApproval() {
 
   const handleApprovePost = async () => {
     if (selectedPost) {
-      await dispatch(approvePost(selectedPost.post_id));
+      await dispatch(approvePost({ postId: selectedPost.post_id, rejected_reason: clientComment }));
       setIsApproveDialogOpen(false);
       setSelectedPost(null);
       setClientComment('');
@@ -251,7 +251,7 @@ export default function ClientPostApproval() {
                   <div className="flex items-start gap-2">
                     <MessageSquare className="w-4 h-4 text-gray-500 mt-1" />
                     <div>
-                      <p className="text-gray-400">Rejection Reason:</p>
+                      <p className="text-gray-400">{post.status === 'Approved' ? 'Client Response:' : 'Rejection Reason:'}</p>
                       <p className="text-gray-300">{post.rejected_reason}</p>
                     </div>
                   </div>
@@ -332,7 +332,7 @@ export default function ClientPostApproval() {
 
               {selectedPost.rejected_reason && (
                 <div>
-                  <label className="block text-sm text-gray-400">Rejection Reason</label>
+                  <label className="block text-sm text-gray-400">{selectedPost.status === 'Approved' ? 'Client Response' : 'Rejection Reason'}</label>
                   <div className="border border-gray-200 rounded-lg p-4 mt-2"><p className="text-gray-500">{selectedPost.rejected_reason}</p></div>
                 </div>
               )}
@@ -351,6 +351,8 @@ export default function ClientPostApproval() {
           <div className="relative bg-gray-800 rounded-md max-w-md w-full p-6 z-10">
             <h3 className="text-lg font-medium mb-2">Approve Post</h3>
             <p className="text-gray-400 mb-4">Are you sure you want to approve this post for {selectedPost.platform}?</p>
+            <label className="block text-sm text-gray-400 mb-1">Response / Comment (Optional)</label>
+            <textarea value={clientComment} onChange={(e) => setClientComment(e.target.value)} placeholder="Add a comment or feedback..." rows={3} className="w-full rounded-md border px-3 py-2 mb-4" />
             <div className="flex justify-end gap-2">
               <Button variant="outline" onClick={() => setIsApproveDialogOpen(false)}>Cancel</Button>
               <Button variant="success" onClick={handleApprovePost} disabled={actionLoading}>{actionLoading ? 'Approving...' : 'Approve Post'}</Button>

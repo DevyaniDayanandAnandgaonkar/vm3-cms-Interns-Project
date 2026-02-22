@@ -1,6 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchMediaPlatforms,
+  addMediaPlatform,
+  updateMediaPlatform,
+  deleteMediaPlatform,
+} from "@/store/slices/mediaPlatformSlice";
 import {
   Share2, Instagram, Linkedin, Youtube, Twitter,
   Eye, EyeOff, Pen, Trash2, Clock, CircleCheck, CircleX, Upload
@@ -18,8 +25,8 @@ const ProfileCard = ({ profile, onDelete, onUpdate }) => {
 
 
   const [selectedPlatform, setSelectedPlatform] = useState(profile.platform);
-  const [selectedAccountType, setSelectedAccountType] = useState(profile.type);
-  const [loginId, setLoginId] = useState(profile.loginId);
+  const [selectedAccountType, setSelectedAccountType] = useState(profile.account_type || "Company");
+  const [loginId, setLoginId] = useState(profile.username);
   const [password, setPassword] = useState(profile.password);
 
   const platforms = ["Instagram", "Facebook", "Twitter", "LinkedIn", "Youtube", "GMB (Google My Business)"];
@@ -27,17 +34,12 @@ const ProfileCard = ({ profile, onDelete, onUpdate }) => {
 
 
   const updateProfile = () => {
-    const updatedData = {
-      ...profile,
+    onUpdate(profile.id, {
       platform: selectedPlatform,
-      type: selectedAccountType,
-      loginId: loginId,
-      password: password
-    };
-
-
-    onUpdate(profile.id, updatedData);
-
+      account_type: selectedAccountType,
+      username: loginId,
+      password: password,
+    });
 
     setIsModalOpenSecound(false);
     alert("Changes Saved!");
@@ -65,13 +67,13 @@ const ProfileCard = ({ profile, onDelete, onUpdate }) => {
             {style.icon}
             <h2 className="text-xl font-semibold text-white">{profile.platform}</h2>
             <span className="inline-flex items-center justify-center rounded-md border border-gray-200 bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-800">
-              {profile.type}
+              {profile.account_type || "N/A"}
             </span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
             <div className="space-y-1">
               <label className="text-sm text-white">Login ID</label>
-              <p className="text-gray-300 font-medium">{profile.loginId}</p>
+              <p className="text-gray-300 font-medium">{profile.username}</p>
             </div>
             <div className="space-y-1">
               <label className="text-sm text-white">Password</label>
@@ -97,20 +99,6 @@ const ProfileCard = ({ profile, onDelete, onUpdate }) => {
       </div>
 
 
-      <div className="border-t border-gray-200 pt-4">
-        <div className="flex items-center justify-between mb-4">
-          <span className="font-medium text-white">Content Statistics</span>
-          <span className="text-sm text-gray-500">Last post: Just now</span>
-        </div>
-        <div className="grid grid-cols-3 gap-4 mb-6">
-          <div className="flex items-center gap-2"><Clock className="w-4 h-4 text-yellow-600" /><div><p className="text-gray-300 font-bold">0</p><p className="text-xs text-gray-500 uppercase">Pending</p></div></div>
-          <div className="flex items-center gap-2"><CircleCheck className="w-4 h-4 text-green-600" /><div><p className="text-gray-300 font-bold">0</p><p className="text-xs text-gray-500 uppercase">Approved</p></div></div>
-          <div className="flex items-center gap-2"><CircleX className="w-4 h-4 text-red-600" /><div><p className="text-gray-900 font-bold">0</p><p className="text-xs text-gray-500 uppercase">Rejected</p></div></div>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="secondary"><Upload className="w-4 h-4 mr-2" />Upload Post</Button>
-        </div>
-      </div>
 
 
       {isModalOpenSecound && (
@@ -211,8 +199,10 @@ const ProfileCard = ({ profile, onDelete, onUpdate }) => {
 
 
 export default function Page() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const dispatch = useDispatch();
+  const { platforms: profiles, loading, error } = useSelector((state) => state.mediaPlatform);
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [loginId, setLoginId] = useState("");
   const [password, setPassword] = useState("");
@@ -222,11 +212,13 @@ export default function Page() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isAccountTypeOpen, setIsAccountTypeOpen] = useState(false);
 
-
-  const [profiles, setProfiles] = useState([]);
-
-  const platforms = ["Instagram", "Facebook", "Twitter", "LinkedIn", "Youtube", "GMB (Google My Business)"];
+  const platformsList = ["Instagram", "Facebook", "Twitter", "LinkedIn", "Youtube", "GMB (Google My Business)"];
   const accountTypes = ["Company", "Personal"];
+
+  // Fetch media platforms on mount
+  useEffect(() => {
+    dispatch(fetchMediaPlatforms());
+  }, [dispatch]);
 
 
   const handleAddProfile = () => {
@@ -234,32 +226,28 @@ export default function Page() {
       alert("Please fill in Login ID and Password");
       return;
     }
-    const newProfile = {
-      id: Date.now(),
+    dispatch(addMediaPlatform({
       platform: selectedPlatform,
-      type: selectedAccountType,
-      loginId: loginId,
-      password: password
-    };
-    setProfiles([...profiles, newProfile]);
+      account_type: selectedAccountType,
+      username: loginId,
+      password: password,
+    }));
     setLoginId("");
     setPassword("");
     setSelectedPlatform("Instagram");
+    setSelectedAccountType("Company");
     setIsModalOpen(false);
     alert("Profile Created Successfully!");
   };
 
 
   const handleDelete = (id) => {
-    setProfiles(profiles.filter(p => p.id !== id));
+    dispatch(deleteMediaPlatform(id));
   };
 
 
   const handleUpdate = (id, updatedData) => {
-    const newProfiles = profiles.map((profile) =>
-      profile.id === id ? updatedData : profile
-    );
-    setProfiles(newProfiles);
+    dispatch(updateMediaPlatform({ id, ...updatedData }));
   };
 
   return (
@@ -280,9 +268,13 @@ export default function Page() {
 
 
       <div className="space-y-6">
-        {profiles.length === 0 ? (
+        {loading ? (
+          <div className="text-center py-10 text-gray-400">Loading profiles...</div>
+        ) : error ? (
+          <div className="text-center py-10 text-red-400">{error}</div>
+        ) : profiles.length === 0 ? (
           <div className="text-center py-10 bg-gray-800 rounded-lg border border-dashed border-gray-700 text-gray-400">
-            No profiles added yet. Click "+ Add Profile" to start.
+            No profiles added yet. Click &quot;+ Add Profile&quot; to start.
           </div>
         ) : (
           profiles.map((profile) => (
@@ -315,7 +307,7 @@ export default function Page() {
                 {isDropdownOpen && (
                   <div className="absolute z-20 w-full mt-2 bg-white border border-gray-200 rounded-md shadow-lg p-2 max-h-60 overflow-y-auto" style={{ scrollbarWidth: 'none' }}>
                     <style jsx>{`div::-webkit-scrollbar { display: none; }`}</style>
-                    {platforms.map((platform) => (
+                    {platformsList.map((platform) => (
                       <div key={platform} onClick={() => { setSelectedPlatform(platform); setIsDropdownOpen(false); }} className="cursor-pointer p-2 hover:bg-gray-100 mb-1 rounded-md text-gray-800">
                         {platform}
                       </div>

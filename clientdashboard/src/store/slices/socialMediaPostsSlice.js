@@ -43,7 +43,7 @@ export const fetchClientPosts = createAsyncThunk(
  */
 export const approvePost = createAsyncThunk(
     "socialMediaPosts/approvePost",
-    async (postId, { rejectWithValue, dispatch }) => {
+    async ({ postId, rejected_reason }, { rejectWithValue, dispatch }) => {
         try {
             const token = getToken();
             if (!token) return rejectWithValue("Not authenticated");
@@ -54,6 +54,7 @@ export const approvePost = createAsyncThunk(
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
+                body: JSON.stringify({ rejected_reason }),
             });
 
             const data = await res.json();

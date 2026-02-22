@@ -33,6 +33,7 @@ exports.approvePost = async (req, res) => {
     try {
         const clientId = req.client.client_id;
         const { postId } = req.params;
+        const { rejected_reason } = req.body;
 
         // Verify post belongs to this client
         const [rows] = await db.query(
@@ -45,8 +46,8 @@ exports.approvePost = async (req, res) => {
         }
 
         await db.query(
-            `UPDATE social_media_posts SET status = 'APPROVED' WHERE post_id = ?`,
-            [postId]
+            `UPDATE social_media_posts SET status = 'APPROVED', rejected_reason = ? WHERE post_id = ?`,
+            [rejected_reason || null, postId]
         );
 
         return res.status(200).json({ success: true, message: "Post approved successfully" });

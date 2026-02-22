@@ -1,44 +1,30 @@
 "use client";
 import { User, Mail, Phone, Building, Lock, Bell, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useState, useMemo } from 'react';
+import { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'sonner';
+import {
+  fetchClientProfileData,
+  updateClientBasicInfo,
+  changeClientPassword,
+  clearUpdateStatus,
+} from '@/store/slices/clientProfileSlice';
 
-// Client profile data
-const clientProfiles = {
-  1: {
-    company_name: 'Tech Corp Inc.',
-    contact_person: 'John Smith',
-    email: 'john.smith@techcorp.com',
-    phone: '+1 (555) 123-4567',
-    address: '123 Business Street, New York, NY 10001',
-    website: 'www.techcorp.com'
-  },
-  2: {
-    company_name: 'Digital Solutions Ltd.',
-    contact_person: 'Sarah Williams',
-    email: 'sarah.williams@digitalsolutions.com',
-    phone: '+1 (555) 234-5678',
-    address: '456 Tech Avenue, San Francisco, CA 94102',
-    website: 'www.digitalsolutions.com'
-  },
-  3: {
-    company_name: 'Creative Agency',
-    contact_person: 'Michael Brown',
-    email: 'michael.brown@creativeagency.com',
-    phone: '+1 (555) 345-6789',
-    address: '789 Design Boulevard, Los Angeles, CA 90001',
-    website: 'www.creativeagency.com'
-  }
-};
+export default function ClientSettings() {
+  const dispatch = useDispatch();
+  const { profileData, loading, updating, updateError, updateSuccess } = useSelector(
+    (state) => state.clientProfile
+  );
 
-export default function ClientSettings(props) {
-  const clientInfo = props?.clientInfo || { client_id: 1, client_name: 'Default' };
-  const initialProfile = useMemo(() => {
-    return clientProfiles[clientInfo.client_id] || clientProfiles[1];
-  }, [clientInfo.client_id]);
-
-  const [profileData, setProfileData] = useState(initialProfile);
+  const [profileForm, setProfileForm] = useState({
+    company_name: '',
+    contact_person: '',
+    email: '',
+    phone: '',
+    address: '',
+    website: '',
+  });
 
   const [passwordData, setPasswordData] = useState({
     current_password: '',
@@ -54,9 +40,45 @@ export default function ClientSettings(props) {
     weekly_reports: true
   });
 
+  // Fetch profile on mount
+  useEffect(() => {
+    dispatch(fetchClientProfileData());
+  }, [dispatch]);
+
+  // Populate form when profileData arrives
+  useEffect(() => {
+    if (profileData) {
+      setProfileForm({
+        company_name: profileData.company_name || profileData.client_name || '',
+        contact_person: profileData.contact_person || profileData.contact_person_name || '',
+        email: profileData.email || '',
+        phone: profileData.phone || profileData.contact_no || '',
+        address: profileData.address || '',
+        website: profileData.website_url || '',
+      });
+    }
+  }, [profileData]);
+
+  // Show toast on update success/error
+  useEffect(() => {
+    if (updateSuccess) {
+      toast.success(updateSuccess);
+      dispatch(clearUpdateStatus());
+    }
+    if (updateError) {
+      toast.error(updateError);
+      dispatch(clearUpdateStatus());
+    }
+  }, [updateSuccess, updateError, dispatch]);
+
   const handleProfileUpdate = () => {
-    // In a real application, this would save to backend
-    toast.success('Profile updated successfully');
+    dispatch(updateClientBasicInfo({
+      company_name: profileForm.company_name,
+      contact_person: profileForm.contact_person,
+      email: profileForm.email,
+      phone: profileForm.phone,
+      address: profileForm.address,
+    }));
   };
 
   const handlePasswordChange = () => {
@@ -68,8 +90,10 @@ export default function ClientSettings(props) {
       toast.error('Password must be at least 8 characters');
       return;
     }
-    // In a real application, this would save to backend
-    toast.success('Password changed successfully');
+    dispatch(changeClientPassword({
+      current_password: passwordData.current_password,
+      new_password: passwordData.new_password,
+    }));
     setPasswordData({
       current_password: '',
       new_password: '',
@@ -78,9 +102,22 @@ export default function ClientSettings(props) {
   };
 
   const handleNotificationUpdate = () => {
-    // In a real application, this would save to backend
     toast.success('Notification settings updated');
   };
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-gray-200 mb-2">Settings</h1>
+          <p className="text-gray-600">Manage your account settings and preferences</p>
+        </div>
+        <div className="p-12 bg-gray-800 rounded-md shadow text-center">
+          <p className="text-gray-400">Loading settings...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -109,8 +146,8 @@ export default function ClientSettings(props) {
                 <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <input
                   id="company_name"
-                  value={profileData.company_name}
-                  onChange={(e) => setProfileData({ ...profileData, company_name: e.target.value })}
+                  value={profileForm.company_name}
+                  onChange={(e) => setProfileForm({ ...profileForm, company_name: e.target.value })}
                   className="pl-10"
                 />
               </div>
@@ -121,8 +158,8 @@ export default function ClientSettings(props) {
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <input
                   id="contact_person"
-                  value={profileData.contact_person}
-                  onChange={(e) => setProfileData({ ...profileData, contact_person: e.target.value })}
+                  value={profileForm.contact_person}
+                  onChange={(e) => setProfileForm({ ...profileForm, contact_person: e.target.value })}
                   className="pl-10"
                 />
               </div>
@@ -137,8 +174,8 @@ export default function ClientSettings(props) {
                 <input
                   id="email"
                   type="email"
-                  value={profileData.email}
-                  onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
+                  value={profileForm.email}
+                  onChange={(e) => setProfileForm({ ...profileForm, email: e.target.value })}
                   className="pl-10"
                 />
               </div>
@@ -150,8 +187,8 @@ export default function ClientSettings(props) {
                 <input
                   id="phone"
                   type="tel"
-                  value={profileData.phone}
-                  onChange={(e) => setProfileData({ ...profileData, phone: e.target.value })}
+                  value={profileForm.phone}
+                  onChange={(e) => setProfileForm({ ...profileForm, phone: e.target.value })}
                   className="pl-10"
                 />
               </div>
@@ -162,8 +199,8 @@ export default function ClientSettings(props) {
             <label htmlFor="address">Address</label>
             <textarea
               id="address"
-              value={profileData.address}
-              onChange={(e) => setProfileData({ ...profileData, address: e.target.value })}
+              value={profileForm.address}
+              onChange={(e) => setProfileForm({ ...profileForm, address: e.target.value })}
               rows={3}
               className="w-full rounded-md border px-3 py-2"
             />
@@ -173,13 +210,15 @@ export default function ClientSettings(props) {
             <label htmlFor="website">Website</label>
             <input
               id="website"
-              value={profileData.website}
-              onChange={(e) => setProfileData({ ...profileData, website: e.target.value })}
+              value={profileForm.website}
+              onChange={(e) => setProfileForm({ ...profileForm, website: e.target.value })}
             />
           </div>
 
           <div className="flex justify-end">
-            <Button onClick={handleProfileUpdate} variant="default">Save Profile Changes</Button>
+            <Button onClick={handleProfileUpdate} variant="default" disabled={updating}>
+              {updating ? 'Saving...' : 'Save Profile Changes'}
+            </Button>
           </div>
         </div>
       </div>
@@ -232,7 +271,9 @@ export default function ClientSettings(props) {
           </div>
 
           <div className="flex justify-end">
-            <Button onClick={handlePasswordChange} variant="default">Change Password</Button>
+            <Button onClick={handlePasswordChange} variant="default" disabled={updating}>
+              {updating ? 'Changing...' : 'Change Password'}
+            </Button>
           </div>
         </div>
       </div>
@@ -351,19 +392,19 @@ export default function ClientSettings(props) {
         <div className="grid gap-4">
           <div className="flex justify-between py-3 border-b">
             <span className="text-gray-400">Account ID</span>
-            <span className="text-gray-200">CLIENT-001</span>
+            <span className="text-gray-200">CLIENT-{profileData?.client_id?.toString().padStart(3, '0') || '---'}</span>
           </div>
           <div className="flex justify-between py-3 border-b">
-            <span className="text-gray-400">Account Type</span>
-            <span className="text-gray-200">Premium Client</span>
+            <span className="text-gray-400">Status</span>
+            <span className="text-gray-200">{profileData?.status || '---'}</span>
           </div>
           <div className="flex justify-between py-3 border-b">
-            <span className="text-gray-400">Member Since</span>
-            <span className="text-gray-200">January 2024</span>
+            <span className="text-gray-400">KYC Verified</span>
+            <span className="text-gray-200">{profileData?.kyc_verified ? 'Yes' : 'No'}</span>
           </div>
           <div className="flex justify-between py-3">
-            <span className="text-gray-400">Active Projects</span>
-            <span className="text-gray-200">5 Projects</span>
+            <span className="text-gray-400">Projects Count</span>
+            <span className="text-gray-200">{profileData?.projects_count ?? 0} Projects</span>
           </div>
         </div>
       </div>

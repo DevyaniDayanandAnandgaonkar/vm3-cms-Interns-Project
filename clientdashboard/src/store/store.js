@@ -5,6 +5,7 @@ import projectReducer from "./slices/projectSlice";
 import clientProfileReducer from "./slices/clientProfileSlice";
 import socialMediaPostsReducer from "./slices/socialMediaPostsSlice";
 import dashboardReducer from "./slices/dashboardSlice";
+import mediaPlatformReducer from "./slices/mediaPlatformSlice";
 
 export const store = configureStore({
     reducer: {
@@ -13,6 +14,7 @@ export const store = configureStore({
         clientProfile: clientProfileReducer,
         socialMediaPosts: socialMediaPostsReducer,
         dashboard: dashboardReducer,
+        mediaPlatform: mediaPlatformReducer,
     },
 });
 
