@@ -1,105 +1,19 @@
 "use client";
 import { Search, Image as ImageIcon, Video, FileText, CheckCircle, XCircle, Clock, Eye, MessageSquare } from 'lucide-react';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button } from '@/components/ui/button';
+import { fetchClientPosts, approvePost, rejectPost } from '@/store/slices/socialMediaPostsSlice';
 
-// All posts data (in production, this would come from an API)
-const allPosts = [
-  {
-    id: 1,
-    client_id: 1,
-    client_name: 'Tech Corp',
-    platform: 'LinkedIn',
-    content: 'Excited to announce our new product launch! Join us this Friday for an exclusive webinar showcasing our latest innovations. #Innovation #TechLaunch',
-    media_type: 'Image',
-    media_url: 'https://via.placeholder.com/600x400',
-    status: 'Pending',
-    created_date: '2024-12-26',
-    scheduled_date: '2024-12-28'
-  },
-  {
-    id: 2,
-    client_id: 1,
-    client_name: 'Tech Corp',
-    platform: 'Instagram',
-    content: 'Behind the scenes at our office! Check out how our team collaborates. #WorkLife #TeamCulture',
-    media_type: 'Video',
-    status: 'Approved',
-    created_date: '2024-12-25',
-    approved_date: '2024-12-25',
-    client_comment: 'Great content! Approved for posting.'
-  },
-  {
-    id: 3,
-    client_id: 2,
-    client_name: 'Global Solutions',
-    platform: 'Facebook',
-    content: 'We are thrilled to share our latest success story with one of our valued clients.',
-    media_type: 'Text',
-    status: 'Pending',
-    created_date: '2024-12-26'
-  },
-  {
-    id: 4,
-    client_id: 2,
-    client_name: 'Global Solutions',
-    platform: 'Twitter',
-    content: 'Check out our latest blog post on industry trends and insights. Link in bio! #Industry #Trends',
-    media_type: 'Image',
-    media_url: 'https://via.placeholder.com/600x400',
-    status: 'Approved',
-    created_date: '2024-12-24',
-    approved_date: '2024-12-24'
-  },
-  {
-    id: 5,
-    client_id: 3,
-    client_name: 'Innovation Inc',
-    platform: 'YouTube',
-    content: 'Watch our CEO discuss the future of technology in this exclusive interview.',
-    media_type: 'Video',
-    status: 'Rejected',
-    created_date: '2024-12-23',
-    rejected_date: '2024-12-24',
-    client_comment: 'Please revise the messaging to be more aligned with our brand voice.'
-  },
-  {
-    id: 6,
-    client_id: 1,
-    client_name: 'Tech Corp',
-    platform: 'GMB',
-    content: 'Visit us today! Special holiday offers available this week only.',
-    media_type: 'Image',
-    media_url: 'https://via.placeholder.com/600x400',
-    status: 'Pending',
-    created_date: '2024-12-26'
-  },
-  {
-    id: 7,
-    client_id: 3,
-    client_name: 'Innovation Inc',
-    platform: 'LinkedIn',
-    content: 'Hiring alert! We are looking for talented individuals to join our team. Check out open positions on our careers page.',
-    media_type: 'Text',
-    status: 'Pending',
-    created_date: '2024-12-26'
-  },
-  {
-    id: 8,
-    client_id: 2,
-    client_name: 'Global Solutions',
-    platform: 'Instagram',
-    content: 'Transform your business with our innovative solutions. Swipe to see before and after results!',
-    media_type: 'Image',
-    media_url: 'https://via.placeholder.com/600x400',
-    status: 'Approved',
-    created_date: '2024-12-25',
-    approved_date: '2024-12-26'
-  }
-];
+// Helper: DB stores UPPERCASE enums, UI uses Title Case
+const toTitleCase = (str) => {
+  if (!str) return '';
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+};
 
-export default function ClientPostApproval(props) {
-  const clientInfo = props?.clientInfo || { client_id: 1, client_name: 'Default' };
+export default function ClientPostApproval() {
+  const dispatch = useDispatch();
+  const { posts: rawPosts, loading, error, actionLoading } = useSelector((state) => state.socialMediaPosts);
 
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('All');
@@ -110,41 +24,54 @@ export default function ClientPostApproval(props) {
   const [selectedPost, setSelectedPost] = useState(null);
   const [clientComment, setClientComment] = useState('');
 
-  const [posts, setPosts] = useState(allPosts);
+  // Fetch posts on mount
+  useEffect(() => {
+    dispatch(fetchClientPosts());
+  }, [dispatch]);
 
-  // Filter posts for this client only
-  const clientPosts = useMemo(() => posts.filter(p => p.client_id === clientInfo.client_id), [posts, clientInfo.client_id]);
+  // Normalize DB enums to title case for display
+  const posts = useMemo(() =>
+    rawPosts.map(p => ({
+      ...p,
+      id: p.post_id,
+      platform: toTitleCase(p.platform),
+      media_type: toTitleCase(p.media_type),
+      status: toTitleCase(p.status),
+      created_date: p.created_date ? new Date(p.created_date).toISOString().split('T')[0] : '',
+      scheduled_date: p.schedule_date ? new Date(p.schedule_date).toISOString().split('T')[0] : '',
+    }))
+    , [rawPosts]);
 
   // Get unique platforms for filters
-  const uniquePlatforms = Array.from(new Set(clientPosts.map(p => p.platform)));
+  const uniquePlatforms = Array.from(new Set(posts.map(p => p.platform)));
 
   // Filter posts
-  const filteredPosts = clientPosts.filter(post => {
-    const matchesSearch = post.content.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredPosts = posts.filter(post => {
+    const matchesSearch = (post.content || '').toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = filterStatus === 'All' || post.status === filterStatus;
     const matchesPlatform = filterPlatform === 'All' || post.platform === filterPlatform;
     return matchesSearch && matchesStatus && matchesPlatform;
   });
 
-  // Count posts by status for this client
+  // Count posts by status
   const statusCounts = useMemo(() => ({
-    pending: clientPosts.filter(p => p.status === 'Pending').length,
-    approved: clientPosts.filter(p => p.status === 'Approved').length,
-    rejected: clientPosts.filter(p => p.status === 'Rejected').length
-  }), [clientPosts]);
+    pending: posts.filter(p => p.status === 'Pending').length,
+    approved: posts.filter(p => p.status === 'Approved').length,
+    rejected: posts.filter(p => p.status === 'Rejected').length
+  }), [posts]);
 
-  const handleApprovePost = () => {
+  const handleApprovePost = async () => {
     if (selectedPost) {
-      setPosts(posts.map(p => p.id === selectedPost.id ? { ...p, status: 'Approved', approved_date: new Date().toISOString().split('T')[0], client_comment: clientComment } : p));
+      await dispatch(approvePost(selectedPost.post_id));
       setIsApproveDialogOpen(false);
       setSelectedPost(null);
       setClientComment('');
     }
   };
 
-  const handleRejectPost = () => {
+  const handleRejectPost = async () => {
     if (selectedPost) {
-      setPosts(posts.map(p => p.id === selectedPost.id ? { ...p, status: 'Rejected', rejected_date: new Date().toISOString().split('T')[0], client_comment: clientComment } : p));
+      await dispatch(rejectPost({ postId: selectedPost.post_id, rejected_reason: clientComment }));
       setIsRejectDialogOpen(false);
       setSelectedPost(null);
       setClientComment('');
@@ -171,15 +98,45 @@ export default function ClientPostApproval(props) {
 
   const getPlatformColor = (platform) => {
     const colors = {
-      'LinkedIn': 'bg-blue-100 text-blue-700',
+      'Linkedin': 'bg-blue-100 text-blue-700',
       'Instagram': 'bg-pink-100 text-pink-700',
       'Facebook': 'bg-blue-100 text-blue-800',
       'Twitter': 'bg-sky-100 text-sky-700',
-      'YouTube': 'bg-red-100 text-red-700',
-      'GMB': 'bg-green-100 text-green-700'
+      'Youtube': 'bg-red-100 text-red-700',
+      'Gmb': 'bg-green-100 text-green-700'
     };
     return colors[platform] || 'bg-gray-100 text-gray-700';
   };
+
+  // Handle loading and error states
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-white mb-2">Post Approval</h1>
+          <p className="text-gray-400">Review and approve posts created for your social media accounts</p>
+        </div>
+        <div className="p-12 bg-gray-800 rounded-md shadow text-center">
+          <p className="text-gray-400">Loading posts...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-white mb-2">Post Approval</h1>
+          <p className="text-gray-400">Review and approve posts created for your social media accounts</p>
+        </div>
+        <div className="p-12 bg-gray-800 rounded-md shadow text-center">
+          <p className="text-red-400">{error}</p>
+          <Button className="mt-4" onClick={() => dispatch(fetchClientPosts())}>Retry</Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -252,7 +209,7 @@ export default function ClientPostApproval(props) {
       {/* Posts Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredPosts.map((post) => (
-          <div key={post.id} className="p-6 bg-gray-800 rounded-md shadow">
+          <div key={post.post_id} className="p-6 bg-gray-800 rounded-md shadow">
             <div className="space-y-4">
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-2">
@@ -267,7 +224,7 @@ export default function ClientPostApproval(props) {
               </div>
 
               <div className="border border-gray-700 rounded-lg p-3">
-                <p className="text-gray-300line-clamp-3">{post.content}</p>
+                <p className="text-gray-300 line-clamp-3">{post.content}</p>
               </div>
 
               {post.media_url && (
@@ -289,13 +246,13 @@ export default function ClientPostApproval(props) {
                 </div>
               )}
 
-              {post.client_comment && (
+              {post.rejected_reason && (
                 <div className="border-t border-gray-700 pt-3">
                   <div className="flex items-start gap-2">
                     <MessageSquare className="w-4 h-4 text-gray-500 mt-1" />
                     <div>
-                      <p className="text-gray-400">Your Feedback:</p>
-                      <p className="text-gray-300">{post.client_comment}</p>
+                      <p className="text-gray-400">Rejection Reason:</p>
+                      <p className="text-gray-300">{post.rejected_reason}</p>
                     </div>
                   </div>
                 </div>
@@ -308,10 +265,10 @@ export default function ClientPostApproval(props) {
 
                 {post.status === 'Pending' && (
                   <>
-                    <Button variant="success" className="flex-1" onClick={() => { setSelectedPost(post); setIsApproveDialogOpen(true); }}>
+                    <Button variant="success" className="flex-1" disabled={actionLoading} onClick={() => { setSelectedPost(post); setIsApproveDialogOpen(true); }}>
                       <CheckCircle className="w-4 h-4" /> Approve
                     </Button>
-                    <Button className="flex-1" onClick={() => { setSelectedPost(post); setIsRejectDialogOpen(true); }}>
+                    <Button className="flex-1" disabled={actionLoading} onClick={() => { setSelectedPost(post); setIsRejectDialogOpen(true); }}>
                       <XCircle className="w-4 h-4" /> Reject
                     </Button>
                   </>
@@ -373,10 +330,10 @@ export default function ClientPostApproval(props) {
                 </div>
               )}
 
-              {selectedPost.client_comment && (
+              {selectedPost.rejected_reason && (
                 <div>
-                  <label className="block text-sm text-gray-600">Your Feedback</label>
-                  <div className="border border-gray-200 rounded-lg p-4 mt-2"><p className="text-gray-900">{selectedPost.client_comment}</p></div>
+                  <label className="block text-sm text-gray-400">Rejection Reason</label>
+                  <div className="border border-gray-200 rounded-lg p-4 mt-2"><p className="text-gray-500">{selectedPost.rejected_reason}</p></div>
                 </div>
               )}
             </div>
@@ -391,14 +348,12 @@ export default function ClientPostApproval(props) {
       {isApproveDialogOpen && selectedPost && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div className="absolute inset-0 bg-black/50" onClick={() => setIsApproveDialogOpen(false)} />
-          <div className="relative bg-white rounded-md max-w-md w-full p-6 z-10">
+          <div className="relative bg-gray-800 rounded-md max-w-md w-full p-6 z-10">
             <h3 className="text-lg font-medium mb-2">Approve Post</h3>
-            <p className="text-gray-600 mb-4">Are you sure you want to approve this post for {selectedPost.platform}?</p>
-            <label className="block text-sm text-gray-600 mb-1">Comment (Optional)</label>
-            <textarea value={clientComment} onChange={(e) => setClientComment(e.target.value)} placeholder="Add any comments or feedback..." rows={3} className="w-full rounded-md border px-3 py-2 mb-4" />
+            <p className="text-gray-400 mb-4">Are you sure you want to approve this post for {selectedPost.platform}?</p>
             <div className="flex justify-end gap-2">
               <Button variant="outline" onClick={() => setIsApproveDialogOpen(false)}>Cancel</Button>
-              <Button variant="success" onClick={handleApprovePost}>Approve Post</Button>
+              <Button variant="success" onClick={handleApprovePost} disabled={actionLoading}>{actionLoading ? 'Approving...' : 'Approve Post'}</Button>
             </div>
           </div>
         </div>
@@ -408,14 +363,14 @@ export default function ClientPostApproval(props) {
       {isRejectDialogOpen && selectedPost && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div className="absolute inset-0 bg-black/50" onClick={() => setIsRejectDialogOpen(false)} />
-          <div className="relative bg-white rounded-md max-w-md w-full p-6 z-10">
+          <div className="relative bg-gray-800 rounded-md max-w-md w-full p-6 z-10">
             <h3 className="text-lg font-medium mb-2">Reject Post</h3>
-            <p className="text-gray-600 mb-4">Are you sure you want to reject this post for {selectedPost.platform}?</p>
-            <label className="block text-sm text-gray-600 mb-1">Reason for Rejection (Required)</label>
+            <p className="text-gray-400 mb-4">Are you sure you want to reject this post for {selectedPost.platform}?</p>
+            <label className="block text-sm text-gray-400 mb-1">Reason for Rejection (Required)</label>
             <textarea value={clientComment} onChange={(e) => setClientComment(e.target.value)} placeholder="Provide a reason for rejection..." rows={3} className="w-full rounded-md border px-3 py-2 mb-4" />
             <div className="flex justify-end gap-2">
               <Button variant="outline" onClick={() => setIsRejectDialogOpen(false)}>Cancel</Button>
-              <Button onClick={handleRejectPost} disabled={!clientComment.trim()}>Reject Post</Button>
+              <Button variant="destructive" onClick={handleRejectPost} disabled={!clientComment.trim() || actionLoading}>{actionLoading ? 'Rejecting...' : 'Reject Post'}</Button>
             </div>
           </div>
         </div>

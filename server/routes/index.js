@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
+const { authenticate, authorizeRoles } = require('../middleware/adminAuthMiddleware');
 
 // Multer storage configuration
 const storage = multer.diskStorage({
@@ -14,10 +15,13 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// Auth routes
+// Auth routes (public — no middleware)
 const authController = require('../controllers/authController');
 router.post('/auth/register', authController.registerAdmin);
 router.post('/auth/login', authController.loginAdmin);
+
+// ── All routes below this line are protected ──
+router.use(authenticate);
 
 // Categories routes
 const categoriesController = require('../controllers/categoriesController');

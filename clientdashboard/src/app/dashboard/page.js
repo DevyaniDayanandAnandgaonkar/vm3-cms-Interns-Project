@@ -1,17 +1,33 @@
+"use client";
+
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchDashboardSummary } from "@/store/slices/dashboardSlice";
+
 import {
   Card,
-  CardAction,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 
 import { Progress } from "@/components/ui/progress";
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
+  const dispatch = useDispatch();
+  const { summary, loading, error } = useSelector((state) => state.dashboard);
+
+  useEffect(() => {
+    dispatch(fetchDashboardSummary());
+  }, [dispatch]);
+
+  const counts = summary?.projectCounts || {};
+  const postCounts = summary?.postCounts || {};
+  const projectsByCategory = summary?.projectsByCategory || [];
+  const recentProjects = summary?.recentProjects || [];
+
   const cardData = [
     {
       svg: (
@@ -36,6 +52,7 @@ export default function Home() {
       ),
       label: "Total Projects",
       bg: "bg-blue-100",
+      count: counts.total_projects ?? 0,
     },
     {
       svg: (
@@ -58,6 +75,7 @@ export default function Home() {
       ),
       label: "Pending Tasks",
       bg: "bg-yellow-100",
+      count: counts.pending_tasks ?? 0,
     },
     {
       svg: (
@@ -80,6 +98,7 @@ export default function Home() {
       ),
       label: "Completed Tasks",
       bg: "bg-green-100",
+      count: counts.completed_tasks ?? 0,
     },
     {
       svg: (
@@ -101,8 +120,9 @@ export default function Home() {
           <line x1="12" x2="12.01" y1="16" y2="16"></line>
         </svg>
       ),
-      label: "Pending Tasks",
+      label: "On Hold",
       bg: "bg-red-100",
+      count: counts.on_hold_tasks ?? 0,
     },
   ];
 
@@ -153,34 +173,31 @@ export default function Home() {
         </svg>
       ),
       title: "Monthly Report",
-      text: "comprehensive monthly performance report including project progress,social media analytics and engagement metrics.",
+      text: "Comprehensive monthly performance report including project progress, social media analytics and engagement metrics.",
     },
   ];
 
-  const projectProgressData = [
-    {
-      project_name: "Website Redesign",
-      status: "In Progress",
-      date: "2024-08-15 to 2024-10-15",
-      progress: "75",
-    },
-    {
-      project_name: "SEO Optimization",
-      status: "Completed",
-      date: "2024-05-01 to 2024-07-31",
-      progress: "100",
-    },
-    {
-      project_name: "E-Commerce Platform",
-      status: "In Progress",
-      date: "2024-09-01 to 2024-12-01",
-      progress: "30",
-    },
-  ];
+  if (loading) {
+    return (
+      <div className="p-12 text-center text-gray-400">
+        Loading dashboard...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-12 text-center">
+        <p className="text-red-400 mb-4">{error}</p>
+        <Button onClick={() => dispatch(fetchDashboardSummary())}>Retry</Button>
+      </div>
+    );
+  }
+
   return (
     <>
       <h1 className="text-lg">Client Dashboard</h1>
-      <p>Welcome Back, Tech Corp Inc..! Here's an overview of your Project</p>
+      <p>Welcome Back! Here's an overview of your Projects</p>
 
       {/* ============================ CARD ==================== */}
       <div className="flex gap-5">
@@ -190,12 +207,12 @@ export default function Home() {
             svg={card.svg}
             label={card.label}
             bg={card.bg}
+            count={card.count}
           />
         ))}
       </div>
 
       {/* project by type */}
-
       <div className="h-fit w-full border rounded-xl mt-10 p-5 bg-gray-800">
         <div className="flex gap-2">
           <div>
@@ -222,15 +239,19 @@ export default function Home() {
           <p className=" text-white mb-2">Project By Type</p>
         </div>
 
-        <div className="flex gap-5 mt-10 ">
-          <div className="flex gap-45 border p-5 rounded-xl">
-            <p>Development</p>
-            <p className="bg-gray-700 rounded-2xl  p-1">2 Projects</p>
-          </div>
-          <div className="flex gap-45 border p-5 rounded-xl">
-            <p>Degital Marketing</p>
-            <p className="bg-gray-700 rounded-2xl  p-1">1 Project</p>
-          </div>
+        <div className="flex gap-5 mt-10 flex-wrap">
+          {projectsByCategory.length > 0 ? (
+            projectsByCategory.map((cat, index) => (
+              <div key={index} className="flex gap-45 border p-5 rounded-xl">
+                <p>{cat.category_name || "Uncategorized"}</p>
+                <p className="bg-gray-700 rounded-2xl p-1">
+                  {cat.project_count} Project{cat.project_count !== 1 ? "s" : ""}
+                </p>
+              </div>
+            ))
+          ) : (
+            <p className="text-gray-400">No projects yet</p>
+          )}
         </div>
       </div>
 
@@ -247,28 +268,30 @@ export default function Home() {
       </div>
 
       {/* progress cards */}
-
       <Card className="mt-5 w-full">
         <CardHeader>
           <CardTitle>Recent Projects</CardTitle>
         </CardHeader>
         <CardContent>
-          {projectProgressData.map((project, index) => (
-            <ProgressCard
-              key={index}
-              project_name={project.project_name}
-              status={project.status}
-              date={project.date}
-              progress={project.progress}
-            />
-          ))}
+          {recentProjects.length > 0 ? (
+            recentProjects.map((project) => (
+              <ProgressCard
+                key={project.project_id}
+                project_name={project.project_name}
+                status={project.status}
+                progress={project.progress}
+              />
+            ))
+          ) : (
+            <p className="text-gray-400 py-4">No projects yet</p>
+          )}
         </CardContent>
       </Card>
     </>
   );
 }
 
-function DashboardCard({ svg, label, bg }) {
+function DashboardCard({ svg, label, bg, count }) {
   return (
     <Card className="mt-5 w-85 ">
       <CardHeader>
@@ -278,7 +301,7 @@ function DashboardCard({ svg, label, bg }) {
         <p>{label}</p>
       </CardContent>
       <CardFooter>
-        <p>{4}</p>
+        <p className="text-2xl font-bold">{count}</p>
       </CardFooter>
     </Card>
   );
@@ -303,26 +326,27 @@ function ReportCard({ svg, title, text }) {
   );
 }
 
-function ProgressCard({ project_name, status, date, progress }) {
+function ProgressCard({ project_name, status, progress }) {
   return (
     <Card className="mt-5 w-full">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle>{project_name}</CardTitle>
           <CardTitle
-            className={`${status === "In Progress"
-                ? " bg-blue-400 p-2 rounded-2xl"
-                : "bg-green-400  p-2 rounded-2xl"
+            className={`${status === "Completed"
+                ? "bg-green-400 p-2 rounded-2xl"
+                : status === "On Hold"
+                  ? "bg-red-400 p-2 rounded-2xl"
+                  : "bg-blue-400 p-2 rounded-2xl"
               }`}
           >
             {status}
           </CardTitle>
         </div>
-        <CardTitle>{date}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex items-center justify-between">
-          <p>progress</p>
+          <p>Progress</p>
           <p>{progress}%</p>
         </div>
         <Progress value={progress} className="w-full mt-2" />

@@ -7,19 +7,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import axios from "axios";
 import { useForm } from "react-hook-form";
 export default function AddProjectForm() {
   const { register, handleSubmit, reset } = useForm();
   const onSubmit = (data) => {
-    axios
-      .post("http://localhost:5000/client/sendProjectRequest/1", data)
-      .then((response) => {
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.error("Error submitting project request:", error);
-      });
+    console.log(data);
     reset();
   };
   return (
@@ -43,7 +35,7 @@ export default function AddProjectForm() {
               <input
                 className="p-2 rounded-xl mb-4"
                 type="text"
-                {...register("projectName")}
+                {...register("firstName")}
                 placeholder="Enter Project Name"
               />
             </div>

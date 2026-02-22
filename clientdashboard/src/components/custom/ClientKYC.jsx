@@ -1,6 +1,8 @@
 import { Card } from "../ui/card";
 
-export default function ClientKYC() {
+export default function ClientKYC({ data }) {
+  const isVerified = data?.kyc_verified === 1;
+
   return (
     <Card className="p-5 mt-5">
       <div className="flex items-center justify-between">
@@ -27,13 +29,22 @@ export default function ClientKYC() {
           </div>
         </div>
         <div>
-          <p className="border p-0.5 rounded-xl text-[13px]">Verified</p>
+          <p
+            className={`border p-0.5 rounded-xl text-[13px] ${isVerified
+                ? "text-green-600 border-green-300 bg-green-50"
+                : "text-yellow-600 border-yellow-300 bg-yellow-50"
+              }`}
+          >
+            {isVerified ? "Verified" : "Not Verified"}
+          </p>
         </div>
       </div>
 
       <div className="mt-4">
         <p className="text-gray-500">
-          Your KYC Verification Complete and Approved
+          {isVerified
+            ? "Your KYC Verification Complete and Approved"
+            : "Your KYC Verification is pending"}
         </p>
       </div>
     </Card>

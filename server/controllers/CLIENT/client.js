@@ -5,7 +5,8 @@ exports.getProjectCount = async (req, res) => {
   const id = req.params.id;
   try {
     const [data] = await db.query(
-      `select * from projects where client_id=${id}`
+      `select * from projects where client_id=?`,
+      [id]
     );
     // const [projectName,description,status,Progress] =data
     // return res.json([projectName,description,status,Progress]);
@@ -33,7 +34,8 @@ exports.getProjectByType = async (req, res) => {
   const id = req.params.id;
   try {
     const [data] = await db.query(
-      `select * from projects where client_id=${id}`
+      `select * from projects where client_id=?`,
+      [id]
     );
 
     const descriptions = data.map((project) => project.description);
@@ -48,7 +50,8 @@ exports.getProjectDetails = async (req, res) => {
   const id = req.params.id;
   try {
     const [data] = await db.query(
-      `select * from projects where client_id=${id}`
+      `select * from projects where client_id=?`,
+      [id]
     );
     return res.status(200).json(data);
   } catch (error) {

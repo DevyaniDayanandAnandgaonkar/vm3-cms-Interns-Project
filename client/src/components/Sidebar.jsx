@@ -20,7 +20,7 @@ const menuItems = [
   { icon: UserCircle, label: 'Clients' },
   { icon: Handshake, label: 'Partners' },
   { icon: FolderKanban, label: 'Projects' },
-  { icon: History, label: 'Project History' },
+  //{ icon: History, label: 'Project History' },
   { icon: UserCog, label: 'Roles' },
   { icon: Briefcase, label: 'Designation' },
   { icon: FileText, label: 'Reports' },

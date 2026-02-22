@@ -1,60 +1,25 @@
 import { Card } from "../ui/card";
 import { Button } from "@/components/ui/button";
+import UpdateBrandingForm from "./UpdateBrandingForm";
 
-export default function ClientBrandingAssets() {
-  const colordata = [
-    { color: "#2563EB" },
-    { color: "#10B981" },
-    { color: "#F59E0B" },
-    { color: "#6B7280" },
-  ];
+export default function ClientBrandingAssets({ data }) {
+  // Parse brand_colors from DB (stored as JSON)
+  const brandColors = data?.brand_colors
+    ? typeof data.brand_colors === "string"
+      ? JSON.parse(data.brand_colors)
+      : data.brand_colors
+    : [];
+
+  // Normalize: support both array-of-objects [{color: "#xxx"}] and array-of-strings ["#xxx"]
+  const colorData =
+    Array.isArray(brandColors) && brandColors.length > 0
+      ? brandColors.map((c) => (typeof c === "string" ? { color: c } : c))
+      : [{ color: "#ccc" }];
+
   return (
     <Card className="p-5 mt-5">
-      <div className="flex gap-3 ">
-        <div>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="lucide lucide-palette w-5 h-5 text-gray-700"
-            aria-hidden="true"
-          >
-            <path d="M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z"></path>
-            <circle cx="13.5" cy="6.5" r=".5" fill="currentColor"></circle>
-            <circle cx="17.5" cy="10.5" r=".5" fill="currentColor"></circle>
-            <circle cx="6.5" cy="12.5" r=".5" fill="currentColor"></circle>
-            <circle cx="8.5" cy="7.5" r=".5" fill="currentColor"></circle>
-          </svg>
-        </div>
-        <div>
-          <p className="text-[18px]">Branding Assets</p>
-        </div>
-      </div>
-      <CompanyLogo />
-      <BrandColors colorData={colordata} />
-      <div className="flex gap-1  items-center justify-between">
-        <BrandGardLines />
-        <Pamphletes />
-      </div>
-    </Card>
-  );
-}
-
-function CompanyLogo() {
-  return (
-    <Card className={"mt-5 p-4"}>
-        <div>
-          <p className="font-semibold">Company Logo</p>
-        </div>
-
-      <div className="flex items-center gap-4">
-        <div className="p-5 border rounded-2xl w-fit">
+      <div className="flex items-center justify-between">
+        <div className="flex gap-3">
           <div>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -66,22 +31,76 @@ function CompanyLogo() {
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="lucide lucide-building w-12 h-12 text-gray-400"
+              className="lucide lucide-palette w-5 h-5 text-gray-700"
               aria-hidden="true"
             >
-              <path d="M12 10h.01"></path>
-              <path d="M12 14h.01"></path>
-              <path d="M12 6h.01"></path>
-              <path d="M16 10h.01"></path>
-              <path d="M16 14h.01"></path>
-              <path d="M16 6h.01"></path>
-              <path d="M8 10h.01"></path>
-              <path d="M8 14h.01"></path>
-              <path d="M8 6h.01"></path>
-              <path d="M9 22v-3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3"></path>
-              <rect x="4" y="2" width="16" height="20" rx="2"></rect>
+              <path d="M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z"></path>
+              <circle cx="13.5" cy="6.5" r=".5" fill="currentColor"></circle>
+              <circle cx="17.5" cy="10.5" r=".5" fill="currentColor"></circle>
+              <circle cx="6.5" cy="12.5" r=".5" fill="currentColor"></circle>
+              <circle cx="8.5" cy="7.5" r=".5" fill="currentColor"></circle>
             </svg>
           </div>
+          <div>
+            <p className="text-[18px]">Branding Assets</p>
+          </div>
+        </div>
+        <UpdateBrandingForm />
+      </div>
+      <CompanyLogo logoUrl={data?.logo_url} />
+      <BrandColors colorData={colorData} />
+      <div className="flex gap-1  items-center justify-between">
+        <BrandGardLines />
+        <Pamphletes />
+      </div>
+    </Card>
+  );
+}
+
+function CompanyLogo({ logoUrl }) {
+  return (
+    <Card className={"mt-5 p-4"}>
+      <div>
+        <p className="font-semibold">Company Logo</p>
+      </div>
+
+      <div className="flex items-center gap-4">
+        <div className="p-5 border rounded-2xl w-fit">
+          {logoUrl ? (
+            <img
+              src={logoUrl}
+              alt="Company Logo"
+              className="w-12 h-12 object-contain"
+            />
+          ) : (
+            <div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="lucide lucide-building w-12 h-12 text-gray-400"
+                aria-hidden="true"
+              >
+                <path d="M12 10h.01"></path>
+                <path d="M12 14h.01"></path>
+                <path d="M12 6h.01"></path>
+                <path d="M16 10h.01"></path>
+                <path d="M16 14h.01"></path>
+                <path d="M16 6h.01"></path>
+                <path d="M8 10h.01"></path>
+                <path d="M8 14h.01"></path>
+                <path d="M8 6h.01"></path>
+                <path d="M9 22v-3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3"></path>
+                <rect x="4" y="2" width="16" height="20" rx="2"></rect>
+              </svg>
+            </div>
+          )}
         </div>
         <div>
           <div className="border p-1 rounded-md flex gap-2">

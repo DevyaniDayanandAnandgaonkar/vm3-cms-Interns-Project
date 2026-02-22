@@ -74,7 +74,7 @@ const menu = [
   { icon: ListTodo, label: "Todos", path: "/employee/todos" },
   { icon: CheckSquare, label: "Tasks", path: "/employee/tasks" },
   { icon: CalendarDays, label: "Leaves", path: "/employee/leaves" },
-  { icon: FolderKanban, label: "Projects", path: "/employee/projects" },
+  //{ icon: FolderKanban, label: "Projects", path: "/employee/projects" },
   { icon: UserCircle, label: "Profile", path: "/employee/profile" },
   { icon: Share2, label: "Social Media", path: "/employee/social-media" },
   { icon: Settings, label: "Settings", path: "/employee/settings" },

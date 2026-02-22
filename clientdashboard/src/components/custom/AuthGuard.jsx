@@ -2,30 +2,40 @@
 
 import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { useSelector, useDispatch } from "react-redux";
+import { hydrateAuth } from "@/store/slices/authSlice";
 
 export default function AuthGuard({ children }) {
   const router = useRouter();
   const pathname = usePathname();
+  const dispatch = useDispatch();
+  const { isAuthenticated, token } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    // simple localStorage-based auth flag
-    let token = null;
+    // Hydrate auth state from localStorage on mount
+    dispatch(hydrateAuth());
+  }, [dispatch]);
+
+  useEffect(() => {
+    // Check localStorage as a fallback (token might not be in Redux yet on first render)
+    let localToken = null;
     try {
-      token = localStorage.getItem("client_token");
+      localToken = localStorage.getItem("client_token");
     } catch (err) {
-      token = null;
+      localToken = null;
     }
 
-    if (!token && pathname !== "/login") {
-      router.push("/login");
+    const hasAuth = isAuthenticated || localToken;
+
+    if (!hasAuth && pathname !== "/login") {
+      router.replace("/login");
       return;
     }
 
-    if (token && pathname === "/login") {
-      // already authenticated, send to root/profile
-      router.push("/");
+    if (hasAuth && pathname === "/login") {
+      router.replace("/dashboard");
     }
-  }, [pathname, router]);
+  }, [pathname, router, isAuthenticated, token]);
 
   return children;
 }

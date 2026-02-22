@@ -11,6 +11,9 @@ const {
   updateSocialMediaPostApprovalStatus,
   rejectSocialMediaPost,
 } = require("../controllers/CLIENT/client");
+const clientAuthController = require("../controllers/CLIENT/clientauthcontroller");
+const projectController = require("../controllers/CLIENT/projectcontroller");
+const verifyClientToken = require("../middleware/clientAuthMiddleware");
 
 const clientRouter = express.Router();
 
@@ -33,6 +36,43 @@ clientRouter.put(
   updateSocialMediaPostApprovalStatus
 );
 
+<<<<<<< HEAD
 // clientRouter.put("/updateSocialMediaPostApprovalStatus/:postId", updateSocialMediaPostApprovalStatus);
 clientRouter.put("/rejectSocialMediaPost/:postId", rejectSocialMediaPost);
+=======
+// POST /api/client-auth/login   — public
+clientRouter.post("/login", clientAuthController.login);
+
+// GET  /api/client-auth/profile — protected
+clientRouter.get("/profile", verifyClientToken, clientAuthController.getProfile);
+
+// GET /api/projects        — list all projects for logged-in client (protected)
+clientRouter.get("/projects", verifyClientToken, projectController.getClientProjects);
+
+// GET /api/projects/:id    — get single project by id, scoped to client (protected)
+clientRouter.get("/projects/:id", verifyClientToken, projectController.getProjectById);
+
+// GET /client/client-profile — get merged client + client_profile data (protected)
+clientRouter.get("/client-profile", verifyClientToken, clientAuthController.getClientProfileData);
+
+// PUT /client/update-basic-info — update basic info (protected)
+clientRouter.put("/update-basic-info", verifyClientToken, clientAuthController.updateClientBasicInfo);
+
+// PUT /client/update-website-info — update website info (protected)
+clientRouter.put("/update-website-info", verifyClientToken, clientAuthController.updateClientWebsiteInfo);
+
+// PUT /client/update-branding — update branding assets (protected)
+clientRouter.put("/update-branding", verifyClientToken, clientAuthController.updateClientBranding);
+
+// Social Media Posts routes
+const socialMediaPostsController = require("../controllers/CLIENT/socialMediaPostsController");
+clientRouter.get("/social-media-posts", verifyClientToken, socialMediaPostsController.getClientPosts);
+clientRouter.put("/social-media-posts/:postId/approve", verifyClientToken, socialMediaPostsController.approvePost);
+clientRouter.put("/social-media-posts/:postId/reject", verifyClientToken, socialMediaPostsController.rejectPost);
+
+// Dashboard summary route
+const dashboardController = require("../controllers/CLIENT/dashboardController");
+clientRouter.get("/dashboard-summary", verifyClientToken, dashboardController.getDashboardSummary);
+
+>>>>>>> d5a758643b2c9e058da1e5e5490752354af6b8a0
 module.exports = clientRouter;

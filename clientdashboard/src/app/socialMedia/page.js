@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { 
-  Share2, Instagram, Linkedin, Youtube, Twitter, 
-  Eye, EyeOff, Pen, Trash2, Clock, CircleCheck, CircleX, Upload 
+import {
+  Share2, Instagram, Linkedin, Youtube, Twitter,
+  Eye, EyeOff, Pen, Trash2, Clock, CircleCheck, CircleX, Upload
 } from "lucide-react";
 import { Button } from '@/components/ui/button';
 
@@ -11,17 +11,17 @@ import { Button } from '@/components/ui/button';
 const ProfileCard = ({ profile, onDelete, onUpdate }) => {
   const [showPassword, setShowPassword] = useState(false);
 
-  
+
   const [isModalOpenSecound, setIsModalOpenSecound] = useState(false);
   const [isDropdownOpenSecound, setIsDropdownOpenSecound] = useState(false);
   const [isAccountTypeOpen, setIsAccountTypeOpen] = useState(false);
 
-  
+
   const [selectedPlatform, setSelectedPlatform] = useState(profile.platform);
   const [selectedAccountType, setSelectedAccountType] = useState(profile.type);
   const [loginId, setLoginId] = useState(profile.loginId);
   const [password, setPassword] = useState(profile.password);
-  
+
   const platforms = ["Instagram", "Facebook", "Twitter", "LinkedIn", "Youtube", "GMB (Google My Business)"];
   const accountTypes = ["Company", "Personal"];
 
@@ -34,16 +34,16 @@ const ProfileCard = ({ profile, onDelete, onUpdate }) => {
       loginId: loginId,
       password: password
     };
-    
-    
+
+
     onUpdate(profile.id, updatedData);
-    
- 
+
+
     setIsModalOpenSecound(false);
     alert("Changes Saved!");
   };
 
-  
+
   const getPlatformStyle = (name) => {
     switch (name) {
       case "Facebook": return { icon: <Share2 className="w-5 h-5 text-blue-600" />, color: "text-blue-600" };
@@ -95,8 +95,8 @@ const ProfileCard = ({ profile, onDelete, onUpdate }) => {
           </Button>
         </div>
       </div>
-      
-      
+
+
       <div className="border-t border-gray-200 pt-4">
         <div className="flex items-center justify-between mb-4">
           <span className="font-medium text-white">Content Statistics</span>
@@ -112,23 +112,23 @@ const ProfileCard = ({ profile, onDelete, onUpdate }) => {
         </div>
       </div>
 
-      
+
       {isModalOpenSecound && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
           <div className="bg-gray-800 rounded-lg shadow-2xl border border-gray-700 w-full max-w-md mx-4 overflow-visible relative">
-            
-           
+
+
             <div className="flex justify-between items-center p-4 border-b">
               <h5 className="text-xl font-medium">Edit Social Media Profile</h5>
-              
+
               <Button onClick={() => setIsModalOpenSecound(false)} variant="ghost" className="text-gray-400 text-2xl">&times;</Button>
             </div>
 
-            
+
             <div className="p-4 space-y-4">
-              
-              
-                <div className="relative">
+
+
+              <div className="relative">
                 <label className="block text-sm font-medium text-gray-200 mb-2">Platform</label>
                 <Button
                   variant="outline"
@@ -150,8 +150,8 @@ const ProfileCard = ({ profile, onDelete, onUpdate }) => {
                 )}
               </div>
 
-          
-                <div className="relative">
+
+              <div className="relative">
                 <label className="block text-sm font-medium text-gray-200 mb-2">Account Type</label>
                 <Button
                   variant="outline"
@@ -163,7 +163,7 @@ const ProfileCard = ({ profile, onDelete, onUpdate }) => {
                 </Button>
                 {isAccountTypeOpen && (
                   <div className="absolute z-20 w-full mt-2 bg-white border border-gray-200 rounded-md shadow-lg p-2" style={{ scrollbarWidth: 'none' }}>
-                      {accountTypes.map((item) => (
+                    {accountTypes.map((item) => (
                       <div key={item} onClick={() => { setSelectedAccountType(item); setIsAccountTypeOpen(false); }} className="cursor-pointer p-2 hover:bg-gray-100 mb-1 rounded-md text-gray-800">
                         {item}
                       </div>
@@ -172,7 +172,7 @@ const ProfileCard = ({ profile, onDelete, onUpdate }) => {
                 )}
               </div>
 
-             
+
               <div>
                 <label className="block text-sm font-medium text-gray-200 mb-2">Login ID / Username</label>
                 <input
@@ -183,7 +183,7 @@ const ProfileCard = ({ profile, onDelete, onUpdate }) => {
                 />
               </div>
 
-          
+
               <div>
                 <label className="block text-sm font-medium text-gray-200 mb-2">Password</label>
                 <input
@@ -195,12 +195,12 @@ const ProfileCard = ({ profile, onDelete, onUpdate }) => {
               </div>
             </div>
 
-           
+
             <div className="flex justify-end gap-2 p-4 border-t bg-gray">
               <Button onClick={() => setIsModalOpenSecound(false)} variant="outline">Close</Button>
               <Button onClick={updateProfile} variant="success">Save Changes</Button>
             </div>
-            
+
           </div>
         </div>
       )}
@@ -212,30 +212,30 @@ const ProfileCard = ({ profile, onDelete, onUpdate }) => {
 
 export default function Page() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  
+
 
   const [loginId, setLoginId] = useState("");
   const [password, setPassword] = useState("");
-  const [selectedPlatform, setSelectedPlatform] = useState("Instagram"); 
-  const [selectedAccountType, setSelectedAccountType] = useState("Company"); 
+  const [selectedPlatform, setSelectedPlatform] = useState("Instagram");
+  const [selectedAccountType, setSelectedAccountType] = useState("Company");
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isAccountTypeOpen, setIsAccountTypeOpen] = useState(false);
 
-  
+
   const [profiles, setProfiles] = useState([]);
 
   const platforms = ["Instagram", "Facebook", "Twitter", "LinkedIn", "Youtube", "GMB (Google My Business)"];
   const accountTypes = ["Company", "Personal"];
 
-  
+
   const handleAddProfile = () => {
     if (!loginId || !password) {
       alert("Please fill in Login ID and Password");
       return;
     }
     const newProfile = {
-      id: Date.now(), 
+      id: Date.now(),
       platform: selectedPlatform,
       type: selectedAccountType,
       loginId: loginId,
@@ -249,14 +249,14 @@ export default function Page() {
     alert("Profile Created Successfully!");
   };
 
-  
+
   const handleDelete = (id) => {
     setProfiles(profiles.filter(p => p.id !== id));
   };
 
 
   const handleUpdate = (id, updatedData) => {
-    const newProfiles = profiles.map((profile) => 
+    const newProfiles = profiles.map((profile) =>
       profile.id === id ? updatedData : profile
     );
     setProfiles(newProfiles);
@@ -264,8 +264,8 @@ export default function Page() {
 
   return (
     <div className="">
-      
-     
+
+
       <div className="rounded-lg flex justify-between items-center mb-6">
         <div>
           <h1 className="font-semibold text-2xl">Social Media Profiles</h1>
@@ -278,7 +278,7 @@ export default function Page() {
         </div>
       </div>
 
-     
+
       <div className="space-y-6">
         {profiles.length === 0 ? (
           <div className="text-center py-10 bg-gray-800 rounded-lg border border-dashed border-gray-700 text-gray-400">
@@ -286,27 +286,27 @@ export default function Page() {
           </div>
         ) : (
           profiles.map((profile) => (
-           
-            <ProfileCard 
-              key={profile.id} 
-              profile={profile} 
-              onDelete={handleDelete} 
-              onUpdate={handleUpdate} 
+
+            <ProfileCard
+              key={profile.id}
+              profile={profile}
+              onDelete={handleDelete}
+              onUpdate={handleUpdate}
             />
           ))
         )}
       </div>
 
-      
+
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
-          <div className="bg-black rounded-lg shadow-2xl border border-gray-200 w-full max-w-md mx-4 overflow-visible relative">
+          <div className="bg-gray-800 rounded-lg shadow-2xl border border-gray-200 w-full max-w-md mx-4 overflow-visible relative">
             <div className="flex justify-between items-center p-4 border-b">
               <h5 className="text-xl font-medium">Add Social Media Profile</h5>
               <Button variant="ghost" className="text-gray-500 hover:text-gray-700 font-bold text-2xl leading-none" onClick={() => setIsModalOpen(false)}>&times;</Button>
             </div>
             <div className="p-4 space-y-4">
-           
+
               <div className="relative">
                 <label className="block text-sm font-medium text-white mb-2">Platform</label>
                 <Button type="button" variant="outline" onClick={() => { setIsDropdownOpen(!isDropdownOpen); setIsAccountTypeOpen(false); }} className="w-full p-2 text-left flex justify-between items-center">
@@ -323,7 +323,7 @@ export default function Page() {
                   </div>
                 )}
               </div>
-             
+
               <div className="relative">
                 <label className="block text-sm font-medium text-white mb-2">Account Type</label>
                 <Button type="button" variant="outline" onClick={() => { setIsAccountTypeOpen(!isAccountTypeOpen); setIsDropdownOpen(false); }} className="w-full p-2 text-left flex justify-between items-center">
@@ -331,7 +331,7 @@ export default function Page() {
                 </Button>
                 {isAccountTypeOpen && (
                   <div className="absolute z-20 w-full mt-2 bg-white border border-gray-200 rounded-md shadow-lg p-2" style={{ scrollbarWidth: 'none' }}>
-                      {accountTypes.map((item) => (
+                    {accountTypes.map((item) => (
                       <div key={item} onClick={() => { setSelectedAccountType(item); setIsAccountTypeOpen(false); }} className="cursor-pointer p-2 hover:bg-gray-100 mb-1 rounded-md text-gray-800">
                         {item}
                       </div>
@@ -339,17 +339,17 @@ export default function Page() {
                   </div>
                 )}
               </div>
-            
+
               <div>
                 <label className="block text-sm font-medium text-white mb-2">Login ID / Username</label>
-                <input type="text" value={loginId} onChange={(e) => setLoginId(e.target.value)} placeholder="Enter Login ID" className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"/>
+                <input type="text" value={loginId} onChange={(e) => setLoginId(e.target.value)} placeholder="Enter Login ID" className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-white mb-2">Password</label>
-                <input type="text" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter Password" className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"/>
+                <input type="text" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter Password" className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500" />
               </div>
             </div>
-            <div className="flex justify-end gap-2 p-4 border-t bg-black">
+            <div className="flex justify-end gap-2 p-4 border-t bg-gray-800">
               <Button variant="outline" onClick={() => setIsModalOpen(false)}>Close</Button>
               <Button onClick={handleAddProfile}>Add Profile</Button>
             </div>

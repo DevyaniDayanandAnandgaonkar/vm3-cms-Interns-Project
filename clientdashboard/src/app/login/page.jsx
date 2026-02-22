@@ -2,28 +2,27 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from '@/components/ui/button';
+import { useDispatch, useSelector } from "react-redux";
+import { loginClient, clearError } from "@/store/slices/authSlice";
+import { Button } from "@/components/ui/button";
 
 export default function ClientLogin() {
   const router = useRouter();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const { loading, error } = useSelector((state) => state.auth);
 
-  const handleLogin = (e) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    // TEMP: replace with real auth call
-    setTimeout(() => {
-      // set a simple client token to denote authenticated state
-      try {
-        localStorage.setItem("client_token", "1");
-      } catch (err) {
-        // ignore localStorage errors
-      }
-      setLoading(false);
-      router.push("/profile");
-    }, 600);
+    dispatch(clearError());
+
+    const result = await dispatch(loginClient({ email, password }));
+
+    if (loginClient.fulfilled.match(result)) {
+      router.push("/dashboard");
+    }
   };
 
   return (
@@ -40,16 +39,23 @@ export default function ClientLogin() {
         <h2 className="text-center text-2xl font-bold text-gray-300">Client Dashboard</h2>
         <p className="text-center text-gray-400 text-sm mb-8">Sign in to access your dashboard</p>
 
+        {/* Error Message */}
+        {error && (
+          <div className="mb-4 p-3 rounded-lg bg-red-500/20 border border-red-500/50 text-red-400 text-sm text-center">
+            {error}
+          </div>
+        )}
+
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
-            <label className="block mb-1 text-gray-300 font-medium">Username</label>
+            <label className="block mb-1 text-gray-300 font-medium">Email</label>
             <div className="flex items-center bg-gray-100 rounded-lg px-3 border border-gray-300">
               <input
-                type="text"
+                type="email"
                 className="w-full py-3 bg-transparent focus:outline-none text-gray-900"
                 placeholder="client@example.com"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>
