@@ -36,9 +36,16 @@ export const updateClientAsync = createAsyncThunk('clients/updateClient', async 
   }
 });
 
-export const fetchClients = createAsyncThunk('clients/fetchClients', async () => {
-  const res = await axios.get(apiRoutes.clients.getAll);
-  return res.data;
+export const fetchClients = createAsyncThunk('clients/fetchClients', async (_, { getState, rejectWithValue }) => {
+  try {
+    const token = getState().auth.token;
+    const res = await axios.get(apiRoutes.clients.getAll, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return res.data;
+  } catch (err) {
+    return rejectWithValue(err.response?.data?.message || 'Failed to fetch clients');
+  }
 });
 
 const initialState = {

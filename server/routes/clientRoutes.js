@@ -50,4 +50,14 @@ clientRouter.put("/update-website-info", verifyClientToken, clientAuthController
 // PUT /client/update-branding — update branding assets (protected)
 clientRouter.put("/update-branding", verifyClientToken, clientAuthController.updateClientBranding);
 
+// Social Media Posts routes
+const socialMediaPostsController = require("../controllers/CLIENT/socialMediaPostsController");
+clientRouter.get("/social-media-posts", verifyClientToken, socialMediaPostsController.getClientPosts);
+clientRouter.put("/social-media-posts/:postId/approve", verifyClientToken, socialMediaPostsController.approvePost);
+clientRouter.put("/social-media-posts/:postId/reject", verifyClientToken, socialMediaPostsController.rejectPost);
+
+// Dashboard summary route
+const dashboardController = require("../controllers/CLIENT/dashboardController");
+clientRouter.get("/dashboard-summary", verifyClientToken, dashboardController.getDashboardSummary);
+
 module.exports = clientRouter;

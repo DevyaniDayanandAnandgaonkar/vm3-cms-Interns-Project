@@ -28,7 +28,7 @@ export function Sidebar() {
         </svg>
       ),
       label: "Dashboard",
-      link: "/",
+      link: "/dashboard",
     },
     {
       svg: (

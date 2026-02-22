@@ -33,7 +33,7 @@ export default function AuthGuard({ children }) {
     }
 
     if (hasAuth && pathname === "/login") {
-      router.replace("/");
+      router.replace("/dashboard");
     }
   }, [pathname, router, isAuthenticated, token]);
 

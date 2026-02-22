@@ -21,7 +21,7 @@ export default function ClientLogin() {
     const result = await dispatch(loginClient({ email, password }));
 
     if (loginClient.fulfilled.match(result)) {
-      router.push("/");
+      router.push("/dashboard");
     }
   };
 
