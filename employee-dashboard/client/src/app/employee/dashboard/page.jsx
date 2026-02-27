@@ -1,6 +1,3 @@
-// export default function DashboardPage() {
-//   return <h1 className="text-xl">Employee Dashboard</h1>;
-// }
 "use client";
 
 import {
@@ -11,85 +8,82 @@ import {
   Clock,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 function formatDateDDMMYYYY(dateStr) {
   const d = new Date(dateStr);
-  const dd = String(d.getDate()).padStart(2, '0');
-  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
   const yyyy = d.getFullYear();
   return `${dd}/${mm}/${yyyy}`;
 }
 
 export default function DashboardPage() {
   const router = useRouter();
+  const [dashboardData, setDashboardData] = useState(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      router.push("/login");
+      return;
+    }
+
+    const fetchDashboard = async () => {
+      try {
+        const res = await fetch(
+          "http://localhost:5000/api/employee-dashboard",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const data = await res.json();
+
+        if (res.ok) {
+          setDashboardData(data.data);
+        } else {
+          router.push("/login");
+        }
+      } catch (error) {
+        console.error("Dashboard error:", error);
+      }
+    };
+
+    fetchDashboard();
+  }, []);
 
   const stats = [
     {
       label: "Active Tasks",
-      value: "8",
+      value: dashboardData?.activeTasks || 0,
       icon: CheckSquare,
       textColor: "text-indigo-400",
       change: "+2 from last week",
     },
     {
       label: "Pending To-Dos",
-      value: "12",
+      value: dashboardData?.pendingTodos || 0,
       icon: ListTodo,
       textColor: "text-purple-400",
       change: "4 completed today",
     },
     {
       label: "Leave Balance",
-      value: "15 Days",
+      value: `${dashboardData?.leaveBalance || 0} Days`,
       icon: Calendar,
       textColor: "text-pink-400",
       change: "Vacation available",
     },
     {
       label: "Performance",
-      value: "94%",
+      value: `${dashboardData?.performance || 0}%`,
       icon: TrendingUp,
       textColor: "text-blue-400",
       change: "+5% this month",
-    },
-  ];
-
-  const recentTasks = [
-    {
-      id: 1,
-      title: "Complete Q4 Report",
-      status: "in-progress",
-      priority: "high",
-      dueDate: "2025-12-15",
-    },
-    {
-      id: 2,
-      title: "Team Meeting Preparation",
-      status: "pending",
-      priority: "medium",
-      dueDate: "2025-12-12",
-    },
-    {
-      id: 3,
-      title: "Code Review",
-      status: "completed",
-      priority: "medium",
-      dueDate: "2025-12-10",
-    },
-  ];
-
-  const upcomingLeaves = [
-    {
-      id: 1,
-      type: "Vacation Leave",
-      dates: "Dec 20 - Dec 27",
-      status: "approved",
-    },
-    {
-      id: 2,
-      type: "Sick Leave",
-      dates: "Dec 12",
-      status: "pending",
     },
   ];
 
@@ -97,7 +91,7 @@ export default function DashboardPage() {
     const base = "px-2 py-1 rounded text-xs font-medium";
     if (status === "completed")
       return <span className={`${base} bg-green-900 text-green-300`}>Completed</span>;
-    if (status === "in-progress")
+    if (status === "inprogress")
       return <span className={`${base} bg-blue-900 text-blue-300`}>In Progress</span>;
     if (status === "pending")
       return <span className={`${base} bg-yellow-900 text-yellow-300`}>Pending</span>;
@@ -108,18 +102,21 @@ export default function DashboardPage() {
 
   const getPriorityBadge = (priority) => {
     const base = "px-2 py-1 rounded text-xs";
-    if (priority === "high")
+    if (priority === "High")
       return <span className={`${base} bg-red-900 text-red-300`}>High</span>;
-    if (priority === "medium")
+    if (priority === "Medium")
       return <span className={`${base} bg-yellow-900 text-yellow-300`}>Medium</span>;
     return <span className={`${base} bg-green-900 text-green-300`}>Low</span>;
   };
 
   return (
-    <div className="space-y-8">
+    <div className="max-w-7xl mx-auto px-6 py-8 space-y-8">
+
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-semibold">Welcome back, John</h1>
+        <h1 className="text-3xl font-semibold">
+          Welcome back, {dashboardData?.name || "Employee"}
+        </h1>
         <p className="text-gray-400">
           Here’s what’s happening with your work today.
         </p>
@@ -145,8 +142,9 @@ export default function DashboardPage() {
         })}
       </div>
 
-      {/* Activity */}
+      {/* Recent + Upcoming Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
         {/* Recent Tasks */}
         <div className="bg-gray-900 rounded-xl p-6 border border-gray-800">
           <div className="flex justify-between mb-4">
@@ -160,8 +158,8 @@ export default function DashboardPage() {
           </div>
 
           <div className="space-y-4">
-            {recentTasks.map((task) => (
-              <div key={task.id} className="bg-gray-800 p-4 rounded-lg">
+            {dashboardData?.recentTasks?.map((task, index) => (
+              <div key={index} className="bg-gray-800 p-4 rounded-lg">
                 <div className="flex justify-between mb-2">
                   <h3>{task.title}</h3>
                   {getPriorityBadge(task.priority)}
@@ -169,7 +167,7 @@ export default function DashboardPage() {
                 <div className="flex gap-4 text-sm text-gray-400">
                   <div className="flex items-center gap-1">
                     <Clock className="w-4 h-4" />
-                    {formatDateDDMMYYYY(task.dueDate)}
+                    {formatDateDDMMYYYY(task.due_date)}
                   </div>
                   {getStatusBadge(task.status)}
                 </div>
@@ -191,25 +189,28 @@ export default function DashboardPage() {
           </div>
 
           <div className="space-y-4">
-            {upcomingLeaves.map((leave) => (
-              <div key={leave.id} className="bg-gray-800 p-4 rounded-lg">
+            {dashboardData?.upcomingLeaves?.map((leave, index) => (
+              <div key={index} className="bg-gray-800 p-4 rounded-lg">
                 <div className="flex justify-between">
-                  <h3>{leave.type}</h3>
+                  <h3>{leave.leave_type}</h3>
                   {getStatusBadge(leave.status)}
                 </div>
                 <p className="text-sm text-gray-400">
-                  {leave.dates}
+                  {formatDateDDMMYYYY(leave.start_date)} -{" "}
+                  {formatDateDDMMYYYY(leave.end_date)}
                 </p>
               </div>
             ))}
           </div>
         </div>
+
       </div>
 
       {/* Quick Actions */}
-      <div className="mt-6 bg-gray-900 rounded-xl border border-gray-800 p-6">
+      <div className="bg-gray-900 rounded-xl border border-gray-800 p-6">
         <h2 className="text-xl mb-4">Quick Actions</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+
           <button
             onClick={() => router.push("/employee/tasks")}
             className="flex flex-col items-center gap-3 p-4 bg-gray-800 rounded-lg hover:bg-gray-700"
@@ -223,7 +224,7 @@ export default function DashboardPage() {
             className="flex flex-col items-center gap-3 p-4 bg-gray-800 rounded-lg hover:bg-gray-700"
           >
             <ListTodo className="w-6 h-6 text-purple-400" />
-            <span>Add To-Do</span> 
+            <span>Add To-Do</span>
           </button>
 
           <button
@@ -241,8 +242,10 @@ export default function DashboardPage() {
             <TrendingUp className="w-6 h-6 text-blue-400" />
             <span>View Reports</span>
           </button>
+
         </div>
       </div>
+
     </div>
   );
 }

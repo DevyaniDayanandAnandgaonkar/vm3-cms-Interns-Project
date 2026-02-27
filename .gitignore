@@ -14,6 +14,8 @@ server/node_modules
 client/package-lock.json
 server/package-lock.json
 
+employee-dashboard/client/node_modules
+employee-dashboard/server/node_modules
 # testing
 /coverage
 

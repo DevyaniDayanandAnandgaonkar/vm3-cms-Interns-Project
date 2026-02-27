@@ -133,22 +133,49 @@ export default function EmployeeLogin() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+const handleLogin = async (e) => {
+  e.preventDefault();
+  setLoading(true);
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    setLoading(true);
+  try {
+    const res = await fetch("http://localhost:5000/api/employee/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: username,   // username field ko email ki tarah use kar rahe
+        password: password,
+      }),
+    });
 
-    // TEMP LOGIN (replace with API later)
-    dispatch(
-      loginSuccess({
-        name: username || "Employee",
-      })
-    );
+    const data = await res.json();
 
-    router.push("/employee/dashboard");
-    setLoading(false);
-  };
+    if (res.ok) {
+      // Token save karo
+      localStorage.setItem("token", data.token);
 
+      // Redux me user save karo (structure change nahi kar rahe)
+      dispatch(
+        loginSuccess({
+          name: data.name,
+          emp_id: data.emp_id,
+          token: data.token,
+        })
+      );
+
+      router.push("/employee/dashboard");
+    } else {
+      alert(data.msg || "Login failed");
+    }
+
+  } catch (error) {
+    console.error("Login error:", error);
+    alert("Server error");
+  }
+
+  setLoading(false);
+};
   return (
     <div
       className="min-h-screen w-full flex items-center justify-center bg-cover bg-center"

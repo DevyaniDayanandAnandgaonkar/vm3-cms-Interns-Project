@@ -1,6 +1,8 @@
- "use client";
+"use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProfile, updateProfile } from "@/redux/features/profileSlice";
 import {
   User,
   Mail,
@@ -13,23 +15,49 @@ import {
 } from "lucide-react";
 
 export default function ProfileView() {
+  const dispatch = useDispatch();
+  const { profile: backendProfile } = useSelector(
+    (state) => state.profile
+  );
+
   const [isEditing, setIsEditing] = useState(false);
 
-  const [profile, setProfile] = useState({
-    name: "John Anderson",
-    email: "john.anderson@company.com",
-    phone: "+1 (555) 123-4567",
-    department: "Engineering",
-    position: "Senior Software Engineer",
-    location: "San Francisco, CA",
-    employeeId: "EMP-2024-1234",
-    joinDate: "2022-03-15",
-  });
+  const [profile, setProfile] = useState({});
+  const [editedProfile, setEditedProfile] = useState({});
 
-  const [editedProfile, setEditedProfile] = useState(profile);
+  useEffect(() => {
+    dispatch(fetchProfile());
+  }, [dispatch]);
 
-  const handleSave = () => {
-    setProfile(editedProfile);
+  // Map backend → frontend format
+  useEffect(() => {
+    if (backendProfile) {
+      const mappedProfile = {
+        name: backendProfile.name || "",
+        email: backendProfile.email || "",
+        phone: backendProfile.contact_no || "",
+        department: backendProfile.department_name || "",
+        position: backendProfile.designation_name || "",
+        location: backendProfile.address || "",
+        employeeId: backendProfile.emp_id || "",
+        joinDate: backendProfile.joining_date || "",
+      };
+
+      setProfile(mappedProfile);
+      setEditedProfile(mappedProfile);
+    }
+  }, [backendProfile]);
+
+  const handleSave = async () => {
+    await dispatch(
+      updateProfile({
+        contact_no: editedProfile.phone,
+        email: editedProfile.email,
+        address: editedProfile.location,
+      })
+    ).unwrap();
+
+    dispatch(fetchProfile());
     setIsEditing(false);
   };
 
@@ -41,7 +69,7 @@ export default function ProfileView() {
   return (
     <div className="p-8 bg-gray-950 min-h-screen">
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
+
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-2xl font-semibold text-gray-100">Profile</h2>
@@ -78,13 +106,10 @@ export default function ProfileView() {
           )}
         </div>
 
-        {/* Profile Card */}
         <div className="bg-gray-900 rounded-xl border border-gray-800 overflow-hidden">
-          {/* Banner */}
           <div className="bg-gradient-to-r from-red-600 to-red-400 h-32" />
 
           <div className="px-8 pb-8">
-            {/* Avatar */}
             <div className="flex items-end gap-6 -mt-16 mb-6">
               <div className="w-32 h-32 bg-gray-900 rounded-full border-4 border-gray-900 shadow-lg flex items-center justify-center">
                 <User className="w-16 h-16 text-gray-500" />
@@ -97,10 +122,8 @@ export default function ProfileView() {
               </div>
             </div>
 
-            {/* Info Grid */}
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Reusable Field */}
                 {[
                   { label: "Full Name", key: "name", icon: User },
                   { label: "Email", key: "email", icon: Mail },
@@ -116,7 +139,7 @@ export default function ProfileView() {
 
                     {isEditing ? (
                       <input
-                        value={editedProfile[key]}
+                        value={editedProfile[key] || ""}
                         onChange={(e) =>
                           setEditedProfile({
                             ...editedProfile,
@@ -135,7 +158,6 @@ export default function ProfileView() {
                 ))}
               </div>
 
-              {/* Employment Info */}
               <div className="pt-6 border-t border-gray-800">
                 <h4 className="font-semibold text-gray-200 mb-4">
                   Employment Information
@@ -148,12 +170,15 @@ export default function ProfileView() {
                   <div>
                     <span className="text-sm text-gray-500">Join Date</span>
                     <div>
-                      {new Date(profile.joinDate).toLocaleDateString()}
+                      {profile.joinDate
+                        ? new Date(profile.joinDate).toLocaleDateString()
+                        : ""}
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+
           </div>
         </div>
       </div>

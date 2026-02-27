@@ -2,51 +2,53 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Plus, Trash2, Check } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchTodos,addTodoAsync,updateTodoAsync,deleteTodoAsync} from "@/redux/features/todoSlice";
 
 export default function TodosPage() {
-  const [todos, setTodos] = useState([
-    { id: "1", text: "Review project documentation", completed: true },
-    { id: "2", text: "Update timesheet", completed: false },
-    { id: "3", text: "Schedule 1:1 with manager", completed: false },
-    { id: "4", text: "Complete online training module", completed: false },
-  ]);
+
+  const dispatch = useDispatch();
+  const todosData = useSelector((state) => state.todos.list);
 
   const [newTodoText, setNewTodoText] = useState("");
   const inputRef = useRef(null);
 
+  // 🔥 Load todos from backend
   useEffect(() => {
+    dispatch(fetchTodos());
     if (inputRef.current) {
       inputRef.current.focus();
     }
-  }, []);
+  }, [dispatch]);
 
+  // Convert backend format → UI format
+  const todos = todosData.map((t) => ({
+    id: t.id,
+    text: t.task_text,
+    completed: t.status === "completed",
+  }));
+
+  // ✅ Add Todo
   const addTodo = () => {
     if (!newTodoText.trim()) return;
 
-    setTodos([
-      ...todos,
-      {
-        id: Date.now().toString(),
-        text: newTodoText,
-        completed: false,
-      },
-    ]);
-
+    dispatch(addTodoAsync(newTodoText));
     setNewTodoText("");
   };
 
-  const toggleTodo = (id) => {
-    setTodos(
-      todos.map((todo) =>
-        todo.id === id
-          ? { ...todo, completed: !todo.completed }
-          : todo
-      )
+  // ✅ Toggle Todo
+  const toggleTodo = (id, completed) => {
+    dispatch(
+      updateTodoAsync({
+        id,
+        status: completed ? "pending" : "completed",
+      })
     );
   };
 
+  // ✅ Delete Todo
   const deleteTodo = (id) => {
-    setTodos(todos.filter((todo) => todo.id !== id));
+    dispatch(deleteTodoAsync(id));
   };
 
   const completedCount = todos.filter((t) => t.completed).length;
@@ -91,7 +93,7 @@ export default function TodosPage() {
             className="bg-gray-900 border border-gray-800 rounded-lg p-4 flex items-center gap-4"
           >
             <button
-              onClick={() => toggleTodo(todo.id)}
+              onClick={() => toggleTodo(todo.id, todo.completed)}
               className={`w-6 h-6 rounded border-2 flex items-center justify-center ${
                 todo.completed
                   ? "bg-green-500 border-green-500"
@@ -132,7 +134,6 @@ export default function TodosPage() {
     </div>
   );
 }
-
 
 
 
