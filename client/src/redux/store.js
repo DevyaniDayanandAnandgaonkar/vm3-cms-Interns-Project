@@ -10,11 +10,13 @@ import projectReducer from "./features/projectSlice";
 import categoryReducer from "./features/categorySlice";
 import designationReducer from "./features/designationSlice";
 import projectHistoryReducer from "./features/projecthistorySlice";
+import leaveReducer from "./features/leaveSlice";
+import taskReducer from "./features/taskSlice";
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
-    clients: clientReducer, 
+    clients: clientReducer,
     employees: employeesReducer,
     partners: partnerReducer,
     departments: departmentReducer,
@@ -23,6 +25,8 @@ export const store = configureStore({
     categories: categoryReducer,
     designations: designationReducer,
     projectHistory: projectHistoryReducer,
+    leaves: leaveReducer,
+    tasks: taskReducer,
   },
 });
 

@@ -79,6 +79,8 @@ import {
   Briefcase,
   FileText,
   Settings,
+  CalendarCheck,
+  ClipboardList,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -89,6 +91,8 @@ const menuItems = [
   { icon: UserCircle, label: "Clients", path: "/admin/clients" },
   { icon: Handshake, label: "Partners", path: "/admin/partners" },
   { icon: FolderKanban, label: "Projects", path: "/admin/projects" },
+  { icon: CalendarCheck, label: "Leaves", path: "/admin/leaves" },
+  { icon: ClipboardList, label: "Tasks", path: "/admin/tasks" },
   //{ icon: History, label: "Project History", path: "/admin/project-history" },
   { icon: UserCog, label: "Roles", path: "/admin/roles" },
   { icon: Briefcase, label: "Designation", path: "/admin/designation" },

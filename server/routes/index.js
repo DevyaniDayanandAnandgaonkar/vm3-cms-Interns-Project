@@ -83,4 +83,15 @@ router.post('/roles', rolesController.createRole);
 router.put('/roles/:id', rolesController.updateRole);
 router.delete('/roles/:id', rolesController.deleteRole);
 
+// Leave management routes
+const leaveController = require('../controllers/leaveController');
+router.get('/leaves', leaveController.getAllLeaveRequests);
+router.put('/leaves/:id', leaveController.updateLeaveStatus);
+
+// Task management routes
+const taskController = require('../controllers/taskController');
+router.get('/tasks', taskController.getAllTasks);
+router.post('/tasks', taskController.createTask);
+router.delete('/tasks/:id', taskController.deleteTask);
+
 module.exports = router;

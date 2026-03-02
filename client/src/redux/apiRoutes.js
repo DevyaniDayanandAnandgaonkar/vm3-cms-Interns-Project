@@ -57,4 +57,13 @@ export const apiRoutes = {
     update: (id) => `${BASE_URL}/roles/${id}`,
     delete: (id) => `${BASE_URL}/roles/${id}`,
   },
+  leaves: {
+    getAll: `${BASE_URL}/leaves`,
+    update: (id) => `${BASE_URL}/leaves/${id}`,
+  },
+  tasks: {
+    getAll: `${BASE_URL}/tasks`,
+    create: `${BASE_URL}/tasks`,
+    delete: (id) => `${BASE_URL}/tasks/${id}`,
+  },
 };

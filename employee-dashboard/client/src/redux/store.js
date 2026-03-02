@@ -5,6 +5,8 @@ import todoReducer from "./features/todoSlice";   // ✅ add
 import leaveReducer from "./features/leaveSlice";
 import profileReducer from "./features/profileSlice";
 import socialMediaReducer from "./features/socialMediaSlice";
+import taskReducer from "./features/taskSlice";
+
 export const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -13,5 +15,6 @@ export const store = configureStore({
     leaves: leaveReducer,  // ✅ add
     profile: profileReducer,  // ✅ add
     socialMedia: socialMediaReducer,
+    employeeTasks: taskReducer,
   },
 });

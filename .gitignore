@@ -16,6 +16,7 @@ server/package-lock.json
 
 employee-dashboard/client/node_modules
 employee-dashboard/server/node_modules
+employee-dashboard/server/.env
 # testing
 /coverage
 

@@ -2,7 +2,7 @@ const pool = require("../config/db");
 
 exports.getEmployeeTasks = async (req, res, next) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.emp_id;
 
     const [tasks] = await pool.query(`
       SELECT 
@@ -32,7 +32,7 @@ exports.getEmployeeTasks = async (req, res, next) => {
 
 exports.updateProgress = async (req, res, next) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.emp_id;
     const taskId = req.params.taskId;
     const { progress } = req.body;
 
