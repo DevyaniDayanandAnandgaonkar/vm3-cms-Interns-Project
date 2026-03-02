@@ -184,19 +184,25 @@ exports.getEmployeeProfile = async (req, res) => {
   try {
     const emp_id = req.user?.emp_id; // 👈 token se
 
+    // First try to get full profile with emp_profile data
     const [rows] = await db.execute(
-      `SELECT ep.*, d.department_name, ds.designation_name
-       FROM emp_profile ep
-       LEFT JOIN departments d ON ep.department_id = d.department_id
-       LEFT JOIN designation ds ON ep.designation_id = ds.designation_id
-       WHERE ep.emp_id = ?`,
+      `SELECT 
+         e.emp_id, e.name, e.email, e.employee_id,
+         ep.department_id, ep.designation_id, ep.joining_date,
+         ep.contact_no, ep.address, ep.skills, ep.status,
+         d.department_name, ds.designation_name
+       FROM employees e
+       LEFT JOIN emp_profile ep ON e.emp_id = ep.emp_id
+       LEFT JOIN departments d ON COALESCE(ep.department_id, e.department_id) = d.department_id
+       LEFT JOIN designation ds ON COALESCE(ep.designation_id, e.designation_id) = ds.designation_id
+       WHERE e.emp_id = ?`,
       [emp_id]
     );
 
     if (rows.length === 0) {
       return res.status(404).json({
         success: false,
-        message: "Profile not found",
+        message: "Employee not found",
       });
     }
 

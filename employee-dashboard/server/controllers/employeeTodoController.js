@@ -1,16 +1,21 @@
 const db = require("../config/db");
 
 
-// Get last 7 days todos
+// Get all todos — mark pending ones older than 7 days as 'timed_out'
 exports.getTodos = async (req, res) => {
   try {
     const user_id = req.user.emp_id;
 
     const [rows] = await db.query(`
-      SELECT id, task_text, status, created_at
+      SELECT id, task_text, 
+        CASE 
+          WHEN status != 'completed' AND created_at < NOW() - INTERVAL 7 DAY 
+          THEN 'timed_out'
+          ELSE status
+        END AS status,
+        created_at
       FROM todos
       WHERE user_id = ?
-      AND created_at >= NOW() - INTERVAL 7 DAY
       ORDER BY created_at DESC
     `, [user_id]);
 
@@ -24,20 +29,19 @@ exports.getTodos = async (req, res) => {
 exports.addTodo = async (req, res) => {
   try {
     const user_id = req.user.emp_id;
-    const { task_text,status } = req.body;
+    const { task_text, status } = req.body;
 
-    await db.query(
+    const [result] = await db.query(
       "INSERT INTO todos (user_id, task_text,status) VALUES (?, ?,?)",
-      [user_id, task_text,status]
+      [user_id, task_text, status]
     );
 
-    //res.json({ message: "Todo added" });
-     res.json({
-  id: result.insertId,
-  task_text,
-  status,
-  created_at: new Date(),
-});
+    res.json({
+      id: result.insertId,
+      task_text,
+      status,
+      created_at: new Date(),
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error", error: error.message });
@@ -74,12 +78,12 @@ exports.deleteTodo = async (req, res) => {
   try {
     const user_id = req.user.emp_id;
     const todo_id = req.params.id;
-// Ensure the todo belongs to the user before deleting
+    // Ensure the todo belongs to the user before deleting
     await db.query(
       "DELETE FROM todos WHERE id=? AND user_id=?",
       [todo_id, user_id]
     );
-// No need to check affectedRows here, as we want to return success even if the todo was already deleted or doesn't belong to the user
+    // No need to check affectedRows here, as we want to return success even if the todo was already deleted or doesn't belong to the user
     res.json({ message: "Todo deleted" });
 
   } catch (error) {

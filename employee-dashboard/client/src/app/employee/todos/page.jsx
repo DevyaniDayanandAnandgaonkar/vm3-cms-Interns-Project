@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Plus, Trash2, Check } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchTodos,addTodoAsync,updateTodoAsync,deleteTodoAsync} from "@/redux/features/todoSlice";
+import { fetchTodos, addTodoAsync, updateTodoAsync, deleteTodoAsync } from "@/redux/features/todoSlice";
 
 export default function TodosPage() {
 
@@ -26,6 +26,7 @@ export default function TodosPage() {
     id: t.id,
     text: t.task_text,
     completed: t.status === "completed",
+    timedOut: t.status === "timed_out",
   }));
 
   // ✅ Add Todo
@@ -52,6 +53,7 @@ export default function TodosPage() {
   };
 
   const completedCount = todos.filter((t) => t.completed).length;
+  const timedOutCount = todos.filter((t) => t.timedOut).length;
 
   return (
     <div className="space-y-6">
@@ -60,6 +62,11 @@ export default function TodosPage() {
         <h1 className="text-3xl font-semibold">To-Do List</h1>
         <p className="text-gray-400">
           {completedCount} of {todos.length} tasks completed
+          {timedOutCount > 0 && (
+            <span className="text-red-400 ml-2">
+              · {timedOutCount} timed out
+            </span>
+          )}
         </p>
       </div>
 
@@ -90,27 +97,32 @@ export default function TodosPage() {
         {todos.map((todo) => (
           <div
             key={todo.id}
-            className="bg-gray-900 border border-gray-800 rounded-lg p-4 flex items-center gap-4"
-          >
-            <button
-              onClick={() => toggleTodo(todo.id, todo.completed)}
-              className={`w-6 h-6 rounded border-2 flex items-center justify-center ${
-                todo.completed
-                  ? "bg-green-500 border-green-500"
-                  : "border-gray-600 hover:border-red-400"
+            className={`bg-gray-900 border rounded-lg p-4 flex items-center gap-4 ${todo.timedOut ? "border-red-800/50 opacity-70" : "border-gray-800"
               }`}
-            >
-              {todo.completed && (
-                <Check className="w-4 h-4 text-white" />
-              )}
-            </button>
+          >
+            {todo.timedOut ? (
+              <span className="px-2 py-0.5 bg-red-500/20 text-red-400 text-xs rounded-full font-medium whitespace-nowrap">
+                Timed Out
+              </span>
+            ) : (
+              <button
+                onClick={() => toggleTodo(todo.id, todo.completed)}
+                className={`w-6 h-6 rounded border-2 flex items-center justify-center ${todo.completed
+                    ? "bg-green-500 border-green-500"
+                    : "border-gray-600 hover:border-red-400"
+                  }`}
+              >
+                {todo.completed && (
+                  <Check className="w-4 h-4 text-white" />
+                )}
+              </button>
+            )}
 
             <span
-              className={`flex-1 ${
-                todo.completed
+              className={`flex-1 ${todo.completed || todo.timedOut
                   ? "line-through text-gray-500"
                   : "text-white"
-              }`}
+                }`}
             >
               {todo.text}
             </span>
